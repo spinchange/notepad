@@ -17,6 +17,7 @@
     border-radius: 3px; cursor: pointer; font-size: 13px; color: #000;
   }
   #toolbar button:hover { background: #e8e8e8; }
+  #toolbar button.active { background: #ddeeff; border-color: #88b; }
   .separator { width: 1px; height: 20px; background: #ccc; margin: 0 4px; }
   #filename { margin-left: 12px; color: #555; font-size: 13px; }
   #modified { color: #c00; font-size: 13px; margin-left: 4px; }
@@ -41,16 +42,84 @@
     font-family: system-ui; min-width: 120px;
   }
   #brand-text::placeholder { color: #aaa; }
-  #content-area { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+  #content-area { display: flex; flex-direction: column; flex: 1; min-height: 0; position: relative; }
   #editor {
     flex: 1; padding: 12px; font-family: Consolas, 'Courier New', monospace;
     font-size: 14px; border: none; outline: none; resize: none;
     white-space: pre; overflow: auto; tab-size: 4;
     background: #fff; color: #000;
   }
-  .color-input-wrap {
-    position: relative; display: inline-block;
+
+  /* Read mode */
+  #reader {
+    display: none; flex: 1; padding: 20px 32px; overflow: auto;
+    font-family: system-ui; font-size: 15px; line-height: 1.6;
+    background: #fff; color: #222;
   }
+  #reader.visible { display: block; }
+  #reader .date-header {
+    font-size: 18px; font-weight: 700; color: #444;
+    border-bottom: 2px solid #e0e0e0; padding: 16px 0 6px;
+    margin: 24px 0 12px;
+  }
+  #reader .date-header:first-child { margin-top: 0; }
+  #reader .entry {
+    display: flex; gap: 12px; padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  #reader .entry-time {
+    font-size: 12px; color: #888; font-family: Consolas, 'Courier New', monospace;
+    white-space: nowrap; min-width: 70px; padding-top: 2px;
+  }
+  #reader .entry-machine {
+    font-size: 10px; background: #e8e8e8; color: #666;
+    padding: 1px 6px; border-radius: 3px; font-family: Consolas, monospace;
+    vertical-align: middle;
+  }
+  #reader .entry-body { flex: 1; word-wrap: break-word; }
+  #reader .entry-body a { color: #2266cc; }
+  #reader .tag {
+    display: inline-block; font-size: 12px; padding: 1px 8px;
+    border-radius: 10px; margin: 0 2px; cursor: pointer;
+    background: #e3f0ff; color: #336; font-weight: 500;
+  }
+  #reader .tag:hover { background: #c8e0ff; }
+  #reader .plain-line { padding: 4px 0; }
+  #reader .plain-line:empty { height: 8px; }
+  #reader .bold { font-weight: 700; }
+  #reader .italic { font-style: italic; }
+  #reader .inline-code {
+    font-family: Consolas, 'Courier New', monospace; font-size: 13px;
+    background: #f0f0f0; padding: 1px 5px; border-radius: 3px;
+  }
+  #reader blockquote {
+    border-left: 3px solid #ccc; padding: 4px 12px; margin: 4px 0;
+    color: #555; font-style: italic;
+  }
+  #reader .search-bar {
+    display: flex; gap: 8px; padding: 8px 0 16px; align-items: center;
+  }
+  #reader .search-bar input {
+    flex: 1; padding: 6px 10px; border: 1px solid #ccc; border-radius: 4px;
+    font-size: 14px; font-family: system-ui; outline: none;
+  }
+  #reader .search-bar input:focus { border-color: #88b; }
+  #reader .search-bar .clear-btn {
+    padding: 6px 12px; border: 1px solid #aaa; background: #f5f5f5;
+    border-radius: 4px; cursor: pointer; font-size: 13px;
+  }
+  #reader .active-filter {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 13px; background: #e3f0ff; color: #336;
+    padding: 4px 10px; border-radius: 12px; margin-bottom: 12px;
+  }
+  #reader .active-filter .remove-filter {
+    cursor: pointer; font-weight: bold; margin-left: 4px;
+    color: #666;
+  }
+  #reader .active-filter .remove-filter:hover { color: #c00; }
+
+  .color-input-wrap { position: relative; display: inline-block; }
   .color-input-wrap input[type="color"] {
     position: absolute; top: 0; left: 0; width: 100%; height: 100%;
     opacity: 0; cursor: pointer;
@@ -85,6 +154,7 @@
   body.dark #toolbar { background: #2d2d2d; border-bottom-color: #444; }
   body.dark #toolbar button { background: #3c3c3c; border-color: #555; color: #ddd; }
   body.dark #toolbar button:hover { background: #505050; }
+  body.dark #toolbar button.active { background: #2a3a4a; border-color: #5588aa; }
   body.dark .separator { background: #555; }
   body.dark #filename { color: #aaa; }
   body.dark #modified { color: #f66; }
@@ -93,6 +163,19 @@
   body.dark #brand-text::placeholder { color: #666; }
   body.dark #brand-placeholder { border-color: #555; color: #777; }
   body.dark #editor { background: #1e1e1e; color: #d4d4d4; }
+  body.dark #reader { background: #1e1e1e; color: #d4d4d4; }
+  body.dark #reader .date-header { color: #ccc; border-bottom-color: #444; }
+  body.dark #reader .entry { border-bottom-color: #333; }
+  body.dark #reader .entry-time { color: #777; }
+  body.dark #reader .entry-machine { background: #3c3c3c; color: #aaa; }
+  body.dark #reader .tag { background: #2a3a4a; color: #8cb4e0; }
+  body.dark #reader .tag:hover { background: #344a5a; }
+  body.dark #reader .entry-body a { color: #6cacee; }
+  body.dark #reader .inline-code { background: #333; color: #d4d4d4; }
+  body.dark #reader blockquote { border-left-color: #555; color: #999; }
+  body.dark #reader .search-bar input { background: #2d2d2d; border-color: #555; color: #ddd; }
+  body.dark #reader .search-bar .clear-btn { background: #3c3c3c; border-color: #555; color: #ddd; }
+  body.dark #reader .active-filter { background: #2a3a4a; color: #8cb4e0; }
   body.dark #settings-panel { background: #2d2d2d; border-color: #444; color: #ddd; }
   body.dark #settings-panel .setting-label { color: #ddd; }
   body.dark #settings-panel label { color: #ddd; }
@@ -102,7 +185,9 @@
   @media print {
     #toolbar, #settings-panel { display: none !important; }
     #brand-bar.visible { display: flex !important; }
-    #editor { overflow: visible; }
+    #editor, #reader { overflow: visible; }
+    #reader .search-bar { display: none !important; }
+    #reader .active-filter { display: none !important; }
   }
 </style>
 </head>
@@ -112,6 +197,8 @@
   <button onclick="openFile()">Open</button>
   <button onclick="saveFile()">Save</button>
   <button onclick="saveFileAs()">Save As</button>
+  <div class="separator"></div>
+  <button onclick="toggleReadMode()" id="readBtn">Read</button>
   <div class="separator"></div>
   <button onclick="toggleTheme()" id="themeBtn">Light</button>
   <button onclick="toggleSettings()">Settings</button>
@@ -156,16 +243,21 @@
 </div>
 <div id="content-area">
   <textarea id="editor" spellcheck="false"></textarea>
+  <div id="reader"></div>
 </div>
 <input type="file" id="logoInput" accept="image/*" style="display:none">
 <input type="file" id="bgInput" accept="image/*" style="display:none">
 <script>
   let fileHandle = null;
   let savedContent = '';
+  let inReadMode = false;
+  let activeTagFilter = '';
   const editor = document.getElementById('editor');
+  const reader = document.getElementById('reader');
   const filenameEl = document.getElementById('filename');
   const modifiedEl = document.getElementById('modified');
   const themeBtn = document.getElementById('themeBtn');
+  const readBtn = document.getElementById('readBtn');
   const settingsPanel = document.getElementById('settings-panel');
   const brandBar = document.getElementById('brand-bar');
   const brandLogo = document.getElementById('brand-logo');
@@ -202,9 +294,7 @@
   }
 
   // --- Logo ---
-  function pickLogo() {
-    logoInput.click();
-  }
+  function pickLogo() { logoInput.click(); }
   logoInput.addEventListener('change', (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -244,18 +334,16 @@
   }
 
   // --- Background image ---
-  function pickBgImage() {
-    bgInput.click();
-  }
+  function pickBgImage() { bgInput.click(); }
   bgInput.addEventListener('change', (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      setBgImage(reader.result);
-      localStorage.setItem('notepad-bgImage', reader.result);
+    const r = new FileReader();
+    r.onload = () => {
+      setBgImage(r.result);
+      localStorage.setItem('notepad-bgImage', r.result);
     };
-    reader.readAsDataURL(file);
+    r.readAsDataURL(file);
     bgInput.value = '';
   });
   function setBgImage(dataUrl) {
@@ -300,6 +388,120 @@
   }
   restoreSettings();
 
+  // --- Read mode ---
+  function toggleReadMode() {
+    inReadMode = !inReadMode;
+    editor.style.display = inReadMode ? 'none' : '';
+    reader.classList.toggle('visible', inReadMode);
+    readBtn.textContent = inReadMode ? 'Edit' : 'Read';
+    readBtn.classList.toggle('active', inReadMode);
+    if (inReadMode) renderReadMode();
+  }
+
+  function formatInlineText(text) {
+    // Escape HTML
+    text = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    // URLs
+    text = text.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
+    // Inline code
+    text = text.replace(/`([^`]+)`/g, '<span class="inline-code">$1</span>');
+    // Bold
+    text = text.replace(/\*\*(.+?)\*\*/g, '<span class="bold">$1</span>');
+    // Italic
+    text = text.replace(/\*(.+?)\*/g, '<span class="italic">$1</span>');
+    // Tags
+    text = text.replace(/#(\w[\w-]*)/g, '<span class="tag" onclick="filterByTag(\'$1\')">#$1</span>');
+    return text;
+  }
+
+  function renderReadMode(searchQuery) {
+    const text = editor.value;
+    const lines = text.split('\n');
+    let html = '';
+
+    // Search bar
+    const sq = searchQuery || '';
+    html += '<div class="search-bar">';
+    html += `<input type="text" placeholder="Search entries..." value="${sq.replace(/"/g, '&quot;')}" oninput="renderReadMode(this.value)">`;
+    if (sq || activeTagFilter) html += '<button class="clear-btn" onclick="clearFilters()">Clear</button>';
+    html += '</div>';
+
+    if (activeTagFilter) {
+      html += `<div class="active-filter">Filtering: #${activeTagFilter} <span class="remove-filter" onclick="clearTagFilter()">x</span></div>`;
+    }
+
+    const query = sq.toLowerCase();
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+
+      // Date header: === Day, Month Date, Year ===
+      const dateMatch = line.match(/^===\s*(.+?)\s*===$/);
+      if (dateMatch) {
+        html += `<div class="date-header">${dateMatch[1]}</div>`;
+        continue;
+      }
+
+      // Timestamped entry: [HH:MM:SS] or [HH:MM:SS @MACHINE]
+      const entryMatch = line.match(/^\[(\d{1,2}:\d{2}:\d{2})(?:\s+@(\w+))?\]\s*(.*)/);
+      if (entryMatch) {
+        const time = entryMatch[1];
+        const machine = entryMatch[2] || '';
+        const body = entryMatch[3];
+
+        // Tag filter
+        if (activeTagFilter) {
+          const re = new RegExp('#' + activeTagFilter + '\\b', 'i');
+          if (!re.test(body)) continue;
+        }
+        // Search filter
+        if (query && !body.toLowerCase().includes(query) && !time.includes(query)) continue;
+
+        let machineHtml = machine ? ` <span class="entry-machine">@${machine}</span>` : '';
+        html += '<div class="entry">';
+        html += `<span class="entry-time">${time}${machineHtml}</span>`;
+        html += `<span class="entry-body">${formatInlineText(body)}</span>`;
+        html += '</div>';
+        continue;
+      }
+
+      // Blockquote
+      if (line.startsWith('> ')) {
+        const content = line.substring(2);
+        if (query && !content.toLowerCase().includes(query)) continue;
+        html += `<blockquote>${formatInlineText(content)}</blockquote>`;
+        continue;
+      }
+
+      // Empty line
+      if (line.trim() === '') {
+        html += '<div class="plain-line"></div>';
+        continue;
+      }
+
+      // Plain text line
+      if (query && !line.toLowerCase().includes(query)) continue;
+      html += `<div class="plain-line">${formatInlineText(line)}</div>`;
+    }
+
+    reader.innerHTML = html;
+  }
+
+  function filterByTag(tag) {
+    activeTagFilter = tag;
+    renderReadMode(reader.querySelector('.search-bar input')?.value || '');
+  }
+
+  function clearTagFilter() {
+    activeTagFilter = '';
+    renderReadMode(reader.querySelector('.search-bar input')?.value || '');
+  }
+
+  function clearFilters() {
+    activeTagFilter = '';
+    renderReadMode('');
+  }
+
   // --- File operations ---
   function updateTitle(name) {
     filenameEl.textContent = name || 'untitled';
@@ -319,6 +521,7 @@
     savedContent = '';
     updateTitle('untitled');
     markDirty();
+    if (inReadMode) renderReadMode();
   }
 
   async function openFile() {
@@ -333,6 +536,7 @@
       savedContent = editor.value;
       updateTitle(fileHandle.name);
       markDirty();
+      if (inReadMode) renderReadMode();
     } catch (e) {
       if (e.name !== 'AbortError') console.error(e);
     }
@@ -369,6 +573,7 @@
     if (e.ctrlKey && e.key === 's') { e.preventDefault(); saveFile(); }
     if (e.ctrlKey && e.key === 'o') { e.preventDefault(); openFile(); }
     if (e.ctrlKey && e.key === 'n') { e.preventDefault(); newFile(); }
+    if (e.ctrlKey && e.key === 'r' && !e.shiftKey) { e.preventDefault(); toggleReadMode(); }
   });
 
   editor.addEventListener('keydown', (e) => {
