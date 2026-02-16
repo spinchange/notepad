@@ -17,6 +17,9 @@ A single-file browser notepad with real file system access. No server, no depend
 - **Timestamped entries** — lines like `[12:30:45 @MACHINE] text #tag` render as cards with time sidebar and machine badge
 - **Hashtag filtering** — `#tags` appear as clickable pills; click one to filter entries by that tag
 - **Search** — real-time search bar in read mode to filter entries by text
+- **Word count** — live word count in the toolbar
+- **Stopwatch timer** — click to start/stop, double-click to reset
+- **Font size control** — adjustable slider in settings (10px–32px)
 - **Keyboard shortcuts** — Ctrl+S (save), Ctrl+O (open), Ctrl+N (new), Ctrl+R (read mode)
 - **Tab key** inserts a tab character
 - **Unsaved changes warning** before closing or switching files
@@ -43,6 +46,7 @@ Click the **Settings** button to:
 
 - Toggle the letterhead bar (logo + name)
 - Choose or remove a logo image
+- Adjust font size
 - Pick editor background and text colors
 - Set a background image
 - Reset everything to defaults
