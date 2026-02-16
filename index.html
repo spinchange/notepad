@@ -143,6 +143,8 @@
   }
   #settings-panel .setting-label { font-size: 13px; color: #333; }
   #settings-panel input[type="color"] { width: 32px; height: 24px; border: 1px solid #aaa; border-radius: 3px; cursor: pointer; }
+  #settings-panel input[type="range"] { width: 100px; cursor: pointer; }
+  #settings-panel .font-size-val { font-size: 13px; min-width: 32px; text-align: center; }
   #settings-panel button {
     padding: 3px 10px; border: 1px solid #aaa; background: #f5f5f5;
     border-radius: 3px; cursor: pointer; font-size: 12px; color: #333;
@@ -218,6 +220,13 @@
     </span>
   </div>
   <div class="setting-row">
+    <span class="setting-label">Font size</span>
+    <span style="display:flex;align-items:center;gap:4px">
+      <input type="range" id="fontSize" min="10" max="32" value="14" oninput="setFontSize(this.value)">
+      <span class="font-size-val" id="fontSizeVal">14px</span>
+    </span>
+  </div>
+  <div class="setting-row">
     <span class="setting-label">Editor background</span>
     <input type="color" id="bgColor" value="#1e1e1e" onchange="setBgColor(this.value)">
   </div>
@@ -268,6 +277,8 @@
   const fgColorInput = document.getElementById('fgColor');
   const logoInput = document.getElementById('logoInput');
   const bgInput = document.getElementById('bgInput');
+  const fontSizeInput = document.getElementById('fontSize');
+  const fontSizeVal = document.getElementById('fontSizeVal');
 
   // --- Theme ---
   function toggleTheme() {
@@ -323,6 +334,15 @@
     localStorage.setItem('notepad-brandText', brandText.value);
   });
 
+  // --- Font size ---
+  function setFontSize(size) {
+    editor.style.fontSize = size + 'px';
+    reader.style.fontSize = size + 'px';
+    fontSizeInput.value = size;
+    fontSizeVal.textContent = size + 'px';
+    localStorage.setItem('notepad-fontSize', size);
+  }
+
   // --- Editor colors ---
   function setBgColor(color) {
     editor.style.background = color;
@@ -361,7 +381,7 @@
   function resetSettings() {
     if (!confirm('Reset all settings to defaults?')) return;
     ['notepad-theme','notepad-showBrand','notepad-logo','notepad-brandText',
-     'notepad-bgColor','notepad-fgColor','notepad-bgImage'].forEach(k => localStorage.removeItem(k));
+     'notepad-fontSize','notepad-bgColor','notepad-fgColor','notepad-bgImage'].forEach(k => localStorage.removeItem(k));
     location.reload();
   }
 
@@ -379,6 +399,8 @@
     if (logo) setLogo(logo);
     const bt = localStorage.getItem('notepad-brandText');
     if (bt) brandText.value = bt;
+    const fs = localStorage.getItem('notepad-fontSize');
+    if (fs) setFontSize(fs);
     const bg = localStorage.getItem('notepad-bgColor');
     if (bg) { editor.style.background = bg; bgColorInput.value = bg; }
     const fg = localStorage.getItem('notepad-fgColor');
