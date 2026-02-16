@@ -159,6 +159,7 @@
   body.dark #toolbar button.active { background: #2a3a4a; border-color: #5588aa; }
   body.dark .separator { background: #555; }
   body.dark #filename { color: #aaa; }
+  body.dark #wordcount { color: #777; }
   body.dark #modified { color: #f66; }
   body.dark #brand-bar { background: #252525; border-bottom-color: #444; }
   body.dark #brand-text { color: #ddd; }
@@ -206,6 +207,7 @@
   <button onclick="toggleSettings()">Settings</button>
   <span id="filename">untitled</span>
   <span id="modified"></span>
+  <span id="wordcount" style="margin-left:auto;color:#555;font-size:13px"></span>
 </div>
 <div id="settings-panel">
   <label>
@@ -265,6 +267,7 @@
   const reader = document.getElementById('reader');
   const filenameEl = document.getElementById('filename');
   const modifiedEl = document.getElementById('modified');
+  const wordcountEl = document.getElementById('wordcount');
   const themeBtn = document.getElementById('themeBtn');
   const readBtn = document.getElementById('readBtn');
   const settingsPanel = document.getElementById('settings-panel');
@@ -530,8 +533,15 @@
     document.title = (name || 'untitled') + ' - Notepad';
   }
 
+  function updateWordCount() {
+    const text = editor.value.trim();
+    const words = text ? text.split(/\s+/).length : 0;
+    wordcountEl.textContent = words === 1 ? '1 word' : words + ' words';
+  }
+
   function markDirty() {
     modifiedEl.textContent = editor.value !== savedContent ? '(modified)' : '';
+    updateWordCount();
   }
 
   editor.addEventListener('input', markDirty);
