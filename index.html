@@ -88,6 +88,7 @@
   #reader .plain-line:empty { height: 8px; }
   #reader .bold { font-weight: 700; }
   #reader .italic { font-style: italic; }
+  #reader .strikethrough { text-decoration: line-through; color: #888; }
   #reader .inline-code {
     font-family: Consolas, 'Courier New', monospace; font-size: 13px;
     background: #f0f0f0; padding: 1px 5px; border-radius: 3px;
@@ -96,6 +97,30 @@
     border-left: 3px solid #ccc; padding: 4px 12px; margin: 4px 0;
     color: #555; font-style: italic;
   }
+  #reader .heading { font-weight: 700; margin: 16px 0 8px; }
+  #reader .heading.h1 { font-size: 1.6em; }
+  #reader .heading.h2 { font-size: 1.35em; }
+  #reader .heading.h3 { font-size: 1.15em; }
+  #reader .list-item { padding: 2px 0 2px 20px; position: relative; }
+  #reader .list-item::before { content: '\2022'; position: absolute; left: 6px; color: #888; }
+  #reader hr { border: none; border-top: 1px solid #ddd; margin: 12px 0; }
+
+  /* Help panel */
+  #help-panel {
+    display: none; position: absolute; top: 36px; right: 80px;
+    background: #fff; border: 1px solid #ccc; border-radius: 6px;
+    padding: 14px 18px; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    min-width: 300px; max-height: 70vh; overflow: auto;
+    font-size: 13px; line-height: 1.7;
+  }
+  #help-panel.visible { display: block; }
+  #help-panel h3 { font-size: 14px; margin: 10px 0 4px; }
+  #help-panel h3:first-child { margin-top: 0; }
+  #help-panel code { background: #f0f0f0; padding: 1px 5px; border-radius: 3px; font-family: Consolas, monospace; font-size: 12px; }
+  #help-panel table { width: 100%; border-collapse: collapse; margin: 4px 0 8px; }
+  #help-panel td { padding: 2px 8px 2px 0; vertical-align: top; }
+  #help-panel td:first-child { white-space: nowrap; }
+  #help-panel a { color: #2266cc; }
   #reader .search-bar {
     display: flex; gap: 8px; padding: 8px 0 16px; align-items: center;
   }
@@ -178,7 +203,13 @@
   body.dark #reader .tag:hover { background: #344a5a; }
   body.dark #reader .entry-body a { color: #6cacee; }
   body.dark #reader .inline-code { background: #333; color: #d4d4d4; }
+  body.dark #reader .strikethrough { color: #666; }
   body.dark #reader blockquote { border-left-color: #555; color: #999; }
+  body.dark #reader hr { border-top-color: #444; }
+  body.dark #reader .list-item::before { color: #666; }
+  body.dark #help-panel { background: #2d2d2d; border-color: #444; color: #ddd; }
+  body.dark #help-panel code { background: #3c3c3c; color: #ddd; }
+  body.dark #help-panel a { color: #6cacee; }
   body.dark #reader .search-bar input { background: #2d2d2d; border-color: #555; color: #ddd; }
   body.dark #reader .search-bar .clear-btn { background: #3c3c3c; border-color: #555; color: #ddd; }
   body.dark #reader .active-filter { background: #2a3a4a; color: #8cb4e0; }
@@ -208,6 +239,7 @@
   <div class="separator"></div>
   <button onclick="toggleTheme()" id="themeBtn">Light</button>
   <button onclick="toggleSettings()">Settings</button>
+  <button onclick="toggleHelp()">Help</button>
   <span id="filename">untitled</span>
   <span id="modified"></span>
   <span id="wordcount" style="margin-left:auto;color:#555;font-size:13px"></span>
@@ -250,6 +282,36 @@
   <div class="setting-row">
     <button onclick="resetSettings()">Reset all settings</button>
   </div>
+</div>
+<div id="help-panel">
+  <h3>Keyboard Shortcuts</h3>
+  <table>
+    <tr><td><code>Ctrl+S</code></td><td>Save</td></tr>
+    <tr><td><code>Ctrl+O</code></td><td>Open</td></tr>
+    <tr><td><code>Ctrl+N</code></td><td>New</td></tr>
+    <tr><td><code>Ctrl+R</code></td><td>Toggle read mode</td></tr>
+    <tr><td><code>Tab</code></td><td>Insert tab</td></tr>
+  </table>
+  <h3>Formatting (visible in Read mode)</h3>
+  <table>
+    <tr><td><code>## Heading</code></td><td>Heading (# h1, ## h2, ### h3)</td></tr>
+    <tr><td><code>**bold**</code></td><td><strong>bold</strong></td></tr>
+    <tr><td><code>*italic*</code></td><td><em>italic</em></td></tr>
+    <tr><td><code>~~strike~~</code></td><td><s>strikethrough</s></td></tr>
+    <tr><td><code>`code`</code></td><td>Inline code</td></tr>
+    <tr><td><code>> quote</code></td><td>Blockquote</td></tr>
+    <tr><td><code>- item</code></td><td>Bullet list item</td></tr>
+    <tr><td><code>---</code></td><td>Horizontal rule</td></tr>
+    <tr><td><code>#tag</code></td><td>Clickable tag (filters in read mode)</td></tr>
+    <tr><td><code>https://...</code></td><td>Auto-linked URL</td></tr>
+  </table>
+  <h3>Journal Format</h3>
+  <table>
+    <tr><td><code>=== Date ===</code></td><td>Date/section header</td></tr>
+    <tr><td><code>[12:30:45] text</code></td><td>Timestamped entry</td></tr>
+    <tr><td><code>[12:30:45 @PC] text</code></td><td>Entry with machine name</td></tr>
+  </table>
+  <p style="margin-top:10px"><a href="https://github.com/spinchange/notepad" target="_blank" rel="noopener">README &amp; source on GitHub</a></p>
 </div>
 <div id="brand-bar">
   <div id="brand-placeholder" onclick="pickLogo()">Add<br>logo</div>
@@ -301,6 +363,18 @@
   document.addEventListener('click', (e) => {
     if (!settingsPanel.contains(e.target) && e.target.textContent !== 'Settings') {
       settingsPanel.classList.remove('visible');
+    }
+  });
+
+  // --- Help panel ---
+  const helpPanel = document.getElementById('help-panel');
+  function toggleHelp() {
+    helpPanel.classList.toggle('visible');
+    settingsPanel.classList.remove('visible');
+  }
+  document.addEventListener('click', (e) => {
+    if (!helpPanel.contains(e.target) && e.target.textContent !== 'Help') {
+      helpPanel.classList.remove('visible');
     }
   });
 
@@ -438,6 +512,8 @@
     text = text.replace(/\*\*(.+?)\*\*/g, '<span class="bold">$1</span>');
     // Italic
     text = text.replace(/\*(.+?)\*/g, '<span class="italic">$1</span>');
+    // Strikethrough
+    text = text.replace(/~~(.+?)~~/g, '<span class="strikethrough">$1</span>');
     // Tags
     text = text.replace(/#(\w[\w-]*)/g, '<span class="tag" onclick="filterByTag(\'$1\')">#$1</span>');
     return text;
@@ -494,11 +570,35 @@
         continue;
       }
 
+      // Horizontal rule
+      if (/^-{3,}\s*$/.test(line)) {
+        html += '<hr>';
+        continue;
+      }
+
+      // Headings
+      const headingMatch = line.match(/^(#{1,3})\s+(.+)/);
+      if (headingMatch) {
+        const level = headingMatch[1].length;
+        const content = headingMatch[2];
+        if (query && !content.toLowerCase().includes(query)) continue;
+        html += `<div class="heading h${level}">${formatInlineText(content)}</div>`;
+        continue;
+      }
+
       // Blockquote
       if (line.startsWith('> ')) {
         const content = line.substring(2);
         if (query && !content.toLowerCase().includes(query)) continue;
         html += `<blockquote>${formatInlineText(content)}</blockquote>`;
+        continue;
+      }
+
+      // List item
+      if (/^[-*]\s+/.test(line)) {
+        const content = line.replace(/^[-*]\s+/, '');
+        if (query && !content.toLowerCase().includes(query)) continue;
+        html += `<div class="list-item">${formatInlineText(content)}</div>`;
         continue;
       }
 
