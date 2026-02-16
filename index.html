@@ -160,6 +160,9 @@
   body.dark .separator { background: #555; }
   body.dark #filename { color: #aaa; }
   body.dark #wordcount { color: #777; }
+  body.dark #timer { color: #777; }
+  #timer.running { color: #4a4; }
+  body.dark #timer.running { color: #6c6; }
   body.dark #modified { color: #f66; }
   body.dark #brand-bar { background: #252525; border-bottom-color: #444; }
   body.dark #brand-text { color: #ddd; }
@@ -208,6 +211,7 @@
   <span id="filename">untitled</span>
   <span id="modified"></span>
   <span id="wordcount" style="margin-left:auto;color:#555;font-size:13px"></span>
+  <span id="timer" onclick="toggleTimer()" title="Click to start/stop, double-click to reset" style="cursor:pointer;color:#555;font-size:13px;font-family:Consolas,'Courier New',monospace;margin-left:8px;user-select:none">0:00</span>
 </div>
 <div id="settings-panel">
   <label>
@@ -532,6 +536,42 @@
     filenameEl.textContent = name || 'untitled';
     document.title = (name || 'untitled') + ' - Notepad';
   }
+
+  // --- Timer ---
+  const timerEl = document.getElementById('timer');
+  let timerInterval = null;
+  let timerSeconds = 0;
+  let timerRunning = false;
+
+  function formatTimer(s) {
+    const m = Math.floor(s / 60);
+    const sec = s % 60;
+    return m + ':' + String(sec).padStart(2, '0');
+  }
+
+  function toggleTimer() {
+    if (timerRunning) {
+      clearInterval(timerInterval);
+      timerRunning = false;
+      timerEl.classList.remove('running');
+    } else {
+      timerRunning = true;
+      timerEl.classList.add('running');
+      timerInterval = setInterval(() => {
+        timerSeconds++;
+        timerEl.textContent = formatTimer(timerSeconds);
+      }, 1000);
+    }
+  }
+
+  timerEl.addEventListener('dblclick', (e) => {
+    e.preventDefault();
+    clearInterval(timerInterval);
+    timerRunning = false;
+    timerSeconds = 0;
+    timerEl.textContent = '0:00';
+    timerEl.classList.remove('running');
+  });
 
   function updateWordCount() {
     const text = editor.value.trim();
