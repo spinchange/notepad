@@ -13,13 +13,17 @@ A single-file browser notepad with real file system access. No server, no depend
 - **Custom colors** — change editor background and text color
 - **Background image** — use any image as editor wallpaper
 - **Read mode** — toggle between editing and a formatted reading view
-- **Inline formatting** — `**bold**`, `*italic*`, `` `code` ``, `> blockquotes`, and auto-linked URLs
+- **Inline formatting** — `**bold**`, `*italic*`, `~~strikethrough~~`, `` `code` ``, `> blockquotes`, and auto-linked URLs
+- **Headings** — `#`, `##`, `###` rendered as styled headings
+- **Lists** — `- item` or `* item` rendered as bullet lists
+- **Horizontal rules** — `---` rendered as a divider
 - **Timestamped entries** — lines like `[12:30:45 @MACHINE] text #tag` render as cards with time sidebar and machine badge
 - **Hashtag filtering** — `#tags` appear as clickable pills; click one to filter entries by that tag
 - **Search** — real-time search bar in read mode to filter entries by text
 - **Word count** — live word count in the toolbar
 - **Stopwatch timer** — click to start/stop, double-click to reset
 - **Font size control** — adjustable slider in settings (10px–32px)
+- **Help button** — in-app formatting reference, shortcuts, and link to README
 - **Keyboard shortcuts** — Ctrl+S (save), Ctrl+O (open), Ctrl+N (new), Ctrl+R (read mode)
 - **Tab key** inserts a tab character
 - **Unsaved changes warning** before closing or switching files
@@ -66,7 +70,10 @@ Click the **Read** button (or Ctrl+R) to switch from editing to a formatted view
 - `[12:30:45 @LUNA] journal entry #tag` renders as a card with timestamp, machine badge, and tag pills
 - `#hashtags` become clickable filters — click one to show only matching entries
 - URLs become clickable links
-- `**bold**`, `*italic*`, `` `code` ``, and `> blockquotes` are rendered inline
+- `**bold**`, `*italic*`, `~~strikethrough~~`, `` `code` ``, and `> blockquotes` are rendered inline
+- `# Heading`, `## Heading`, `### Heading` — three levels of headings
+- `- item` or `* item` — bullet lists
+- `---` — horizontal rule
 - A search bar at the top filters entries in real-time
 - Click **Edit** to return to the raw text editor
 
