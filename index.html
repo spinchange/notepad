@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='15' y='8' width='50' height='65' rx='3' fill='%23f5f5dc' stroke='%23555' stroke-width='3'/><line x1='25' y1='25' x2='55' y2='25' stroke='%23aaa' stroke-width='2'/><line x1='25' y1='35' x2='55' y2='35' stroke='%23aaa' stroke-width='2'/><line x1='25' y1='45' x2='45' y2='45' stroke='%23aaa' stroke-width='2'/><rect x='58' y='50' width='8' height='38' rx='2' transform='rotate(-30 62 69)' fill='%23f4c430' stroke='%23555' stroke-width='2'/><polygon points='49,84 53,74 57,78' fill='%23555'/></svg>">
+<title>Notepad</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { display: flex; flex-direction: column; height: 100vh; font-family: system-ui; }
+  #toolbar {
+    display: flex; gap: 4px; padding: 6px 8px;
+    background: #f0f0f0; border-bottom: 1px solid #ccc;
+    align-items: center; flex-wrap: wrap;
+  }
+  #toolbar button {
+    padding: 4px 12px; border: 1px solid #aaa; background: #fff;
+    border-radius: 3px; cursor: pointer; font-size: 13px; color: #000;
+  }
+  #toolbar button:hover { background: #e8e8e8; }
+  .separator { width: 1px; height: 20px; background: #ccc; margin: 0 4px; }
+  #filename { margin-left: 12px; color: #555; font-size: 13px; }
+  #modified { color: #c00; font-size: 13px; margin-left: 4px; }
+  #brand-bar {
+    display: none; padding: 12px 16px; align-items: center; gap: 12px;
+    border-bottom: 1px solid #ccc; background: #fafafa;
+  }
+  #brand-bar.visible { display: flex; }
+  #brand-logo {
+    max-height: 48px; max-width: 200px; object-fit: contain; cursor: pointer;
+  }
+  #brand-logo:hover { opacity: 0.8; }
+  #brand-placeholder {
+    width: 48px; height: 48px; border: 2px dashed #aaa; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: #999; font-size: 11px; text-align: center;
+  }
+  #brand-placeholder:hover { border-color: #666; color: #666; }
+  #brand-text {
+    font-size: 16px; font-weight: 600; color: #333;
+    border: none; background: transparent; outline: none;
+    font-family: system-ui; min-width: 120px;
+  }
+  #brand-text::placeholder { color: #aaa; }
+  #content-area { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+  #editor {
+    flex: 1; padding: 12px; font-family: Consolas, 'Courier New', monospace;
+    font-size: 14px; border: none; outline: none; resize: none;
+    white-space: pre; overflow: auto; tab-size: 4;
+    background: #fff; color: #000;
+  }
+  .color-input-wrap {
+    position: relative; display: inline-block;
+  }
+  .color-input-wrap input[type="color"] {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    opacity: 0; cursor: pointer;
+  }
+
+  /* Settings panel */
+  #settings-panel {
+    display: none; position: absolute; top: 36px; right: 8px;
+    background: #fff; border: 1px solid #ccc; border-radius: 6px;
+    padding: 12px 16px; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    min-width: 220px;
+  }
+  #settings-panel.visible { display: block; }
+  #settings-panel label {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; color: #333; margin-bottom: 8px; cursor: pointer;
+  }
+  #settings-panel .setting-row {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  #settings-panel .setting-label { font-size: 13px; color: #333; }
+  #settings-panel input[type="color"] { width: 32px; height: 24px; border: 1px solid #aaa; border-radius: 3px; cursor: pointer; }
+  #settings-panel button {
+    padding: 3px 10px; border: 1px solid #aaa; background: #f5f5f5;
+    border-radius: 3px; cursor: pointer; font-size: 12px; color: #333;
+  }
+  #settings-panel button:hover { background: #e0e0e0; }
+
+  /* Dark mode */
+  body.dark { background: #1e1e1e; }
+  body.dark #toolbar { background: #2d2d2d; border-bottom-color: #444; }
+  body.dark #toolbar button { background: #3c3c3c; border-color: #555; color: #ddd; }
+  body.dark #toolbar button:hover { background: #505050; }
+  body.dark .separator { background: #555; }
+  body.dark #filename { color: #aaa; }
+  body.dark #modified { color: #f66; }
+  body.dark #brand-bar { background: #252525; border-bottom-color: #444; }
+  body.dark #brand-text { color: #ddd; }
+  body.dark #brand-text::placeholder { color: #666; }
+  body.dark #brand-placeholder { border-color: #555; color: #777; }
+  body.dark #editor { background: #1e1e1e; color: #d4d4d4; }
+  body.dark #settings-panel { background: #2d2d2d; border-color: #444; color: #ddd; }
+  body.dark #settings-panel .setting-label { color: #ddd; }
+  body.dark #settings-panel label { color: #ddd; }
+  body.dark #settings-panel button { background: #3c3c3c; border-color: #555; color: #ddd; }
+  body.dark #settings-panel button:hover { background: #505050; }
+
+  @media print {
+    #toolbar, #settings-panel { display: none !important; }
+    #brand-bar.visible { display: flex !important; }
+    #editor { overflow: visible; }
+  }
+</style>
+</head>
+<body class="dark">
+<div id="toolbar">
+  <button onclick="newFile()">New</button>
+  <button onclick="openFile()">Open</button>
+  <button onclick="saveFile()">Save</button>
+  <button onclick="saveFileAs()">Save As</button>
+  <div class="separator"></div>
+  <button onclick="toggleTheme()" id="themeBtn">Light</button>
+  <button onclick="toggleSettings()">Settings</button>
+  <span id="filename">untitled</span>
+  <span id="modified"></span>
+</div>
+<div id="settings-panel">
+  <label>
+    <input type="checkbox" id="showBrand" onchange="toggleBrand()">
+    Show letterhead
+  </label>
+  <div class="setting-row">
+    <span class="setting-label">Logo</span>
+    <span>
+      <button onclick="pickLogo()">Choose</button>
+      <button onclick="removeLogo()">Remove</button>
+    </span>
+  </div>
+  <div class="setting-row">
+    <span class="setting-label">Editor background</span>
+    <input type="color" id="bgColor" value="#1e1e1e" onchange="setBgColor(this.value)">
+  </div>
+  <div class="setting-row">
+    <span class="setting-label">Text color</span>
+    <input type="color" id="fgColor" value="#d4d4d4" onchange="setFgColor(this.value)">
+  </div>
+  <div class="setting-row">
+    <span class="setting-label">Background image</span>
+    <span>
+      <button onclick="pickBgImage()">Choose</button>
+      <button onclick="removeBgImage()">Remove</button>
+    </span>
+  </div>
+  <div class="setting-row">
+    <button onclick="resetSettings()">Reset all settings</button>
+  </div>
+</div>
+<div id="brand-bar">
+  <div id="brand-placeholder" onclick="pickLogo()">Add<br>logo</div>
+  <img id="brand-logo" style="display:none" onclick="pickLogo()">
+  <input type="text" id="brand-text" placeholder="Your name or company">
+</div>
+<div id="content-area">
+  <textarea id="editor" spellcheck="false"></textarea>
+</div>
+<input type="file" id="logoInput" accept="image/*" style="display:none">
+<input type="file" id="bgInput" accept="image/*" style="display:none">
+<script>
+  let fileHandle = null;
+  let savedContent = '';
+  const editor = document.getElementById('editor');
+  const filenameEl = document.getElementById('filename');
+  const modifiedEl = document.getElementById('modified');
+  const themeBtn = document.getElementById('themeBtn');
+  const settingsPanel = document.getElementById('settings-panel');
+  const brandBar = document.getElementById('brand-bar');
+  const brandLogo = document.getElementById('brand-logo');
+  const brandPlaceholder = document.getElementById('brand-placeholder');
+  const brandText = document.getElementById('brand-text');
+  const showBrandCheck = document.getElementById('showBrand');
+  const bgColorInput = document.getElementById('bgColor');
+  const fgColorInput = document.getElementById('fgColor');
+  const logoInput = document.getElementById('logoInput');
+  const bgInput = document.getElementById('bgInput');
+
+  // --- Theme ---
+  function toggleTheme() {
+    const dark = document.body.classList.toggle('dark');
+    themeBtn.textContent = dark ? 'Light' : 'Dark';
+    localStorage.setItem('notepad-theme', dark ? 'dark' : 'light');
+  }
+
+  // --- Settings panel ---
+  function toggleSettings() {
+    settingsPanel.classList.toggle('visible');
+  }
+  document.addEventListener('click', (e) => {
+    if (!settingsPanel.contains(e.target) && e.target.textContent !== 'Settings') {
+      settingsPanel.classList.remove('visible');
+    }
+  });
+
+  // --- Brand / Letterhead ---
+  function toggleBrand() {
+    const show = showBrandCheck.checked;
+    brandBar.classList.toggle('visible', show);
+    localStorage.setItem('notepad-showBrand', show);
+  }
+
+  // --- Logo ---
+  function pickLogo() {
+    logoInput.click();
+  }
+  logoInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      setLogo(reader.result);
+      localStorage.setItem('notepad-logo', reader.result);
+    };
+    reader.readAsDataURL(file);
+    logoInput.value = '';
+  });
+  function setLogo(dataUrl) {
+    brandLogo.src = dataUrl;
+    brandLogo.style.display = 'block';
+    brandPlaceholder.style.display = 'none';
+  }
+  function removeLogo() {
+    brandLogo.src = '';
+    brandLogo.style.display = 'none';
+    brandPlaceholder.style.display = 'flex';
+    localStorage.removeItem('notepad-logo');
+  }
+
+  // --- Brand text ---
+  brandText.addEventListener('input', () => {
+    localStorage.setItem('notepad-brandText', brandText.value);
+  });
+
+  // --- Editor colors ---
+  function setBgColor(color) {
+    editor.style.background = color;
+    localStorage.setItem('notepad-bgColor', color);
+  }
+  function setFgColor(color) {
+    editor.style.color = color;
+    localStorage.setItem('notepad-fgColor', color);
+  }
+
+  // --- Background image ---
+  function pickBgImage() {
+    bgInput.click();
+  }
+  bgInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      setBgImage(reader.result);
+      localStorage.setItem('notepad-bgImage', reader.result);
+    };
+    reader.readAsDataURL(file);
+    bgInput.value = '';
+  });
+  function setBgImage(dataUrl) {
+    editor.style.backgroundImage = `url(${dataUrl})`;
+    editor.style.backgroundSize = 'cover';
+    editor.style.backgroundPosition = 'center';
+    editor.style.backgroundRepeat = 'no-repeat';
+  }
+  function removeBgImage() {
+    editor.style.backgroundImage = '';
+    localStorage.removeItem('notepad-bgImage');
+  }
+
+  // --- Reset ---
+  function resetSettings() {
+    if (!confirm('Reset all settings to defaults?')) return;
+    ['notepad-theme','notepad-showBrand','notepad-logo','notepad-brandText',
+     'notepad-bgColor','notepad-fgColor','notepad-bgImage'].forEach(k => localStorage.removeItem(k));
+    location.reload();
+  }
+
+  // --- Restore settings ---
+  function restoreSettings() {
+    if (localStorage.getItem('notepad-theme') === 'light') {
+      document.body.classList.remove('dark');
+      themeBtn.textContent = 'Dark';
+    }
+    if (localStorage.getItem('notepad-showBrand') === 'true') {
+      showBrandCheck.checked = true;
+      brandBar.classList.add('visible');
+    }
+    const logo = localStorage.getItem('notepad-logo');
+    if (logo) setLogo(logo);
+    const bt = localStorage.getItem('notepad-brandText');
+    if (bt) brandText.value = bt;
+    const bg = localStorage.getItem('notepad-bgColor');
+    if (bg) { editor.style.background = bg; bgColorInput.value = bg; }
+    const fg = localStorage.getItem('notepad-fgColor');
+    if (fg) { editor.style.color = fg; fgColorInput.value = fg; }
+    const bgImg = localStorage.getItem('notepad-bgImage');
+    if (bgImg) setBgImage(bgImg);
+  }
+  restoreSettings();
+
+  // --- File operations ---
+  function updateTitle(name) {
+    filenameEl.textContent = name || 'untitled';
+    document.title = (name || 'untitled') + ' - Notepad';
+  }
+
+  function markDirty() {
+    modifiedEl.textContent = editor.value !== savedContent ? '(modified)' : '';
+  }
+
+  editor.addEventListener('input', markDirty);
+
+  function newFile() {
+    if (editor.value !== savedContent && !confirm('Discard unsaved changes?')) return;
+    fileHandle = null;
+    editor.value = '';
+    savedContent = '';
+    updateTitle('untitled');
+    markDirty();
+  }
+
+  async function openFile() {
+    if (editor.value !== savedContent && !confirm('Discard unsaved changes?')) return;
+    try {
+      [fileHandle] = await window.showOpenFilePicker({
+        types: [{ description: 'Text Files', accept: { 'text/plain': ['.txt', '.md', '.log', '.csv', '.json', '.xml', '.html', '.css', '.js', '.ps1', '.py'] }}],
+        multiple: false
+      });
+      const file = await fileHandle.getFile();
+      editor.value = await file.text();
+      savedContent = editor.value;
+      updateTitle(fileHandle.name);
+      markDirty();
+    } catch (e) {
+      if (e.name !== 'AbortError') console.error(e);
+    }
+  }
+
+  async function saveFile() {
+    if (!fileHandle) return saveFileAs();
+    try {
+      const writable = await fileHandle.createWritable();
+      await writable.write(editor.value);
+      await writable.close();
+      savedContent = editor.value;
+      markDirty();
+    } catch (e) {
+      if (e.name !== 'AbortError') console.error(e);
+    }
+  }
+
+  async function saveFileAs() {
+    try {
+      fileHandle = await window.showSaveFilePicker({
+        suggestedName: fileHandle ? fileHandle.name : 'untitled.txt',
+        types: [{ description: 'Text Files', accept: { 'text/plain': ['.txt'] }}]
+      });
+      await saveFile();
+      updateTitle(fileHandle.name);
+    } catch (e) {
+      if (e.name !== 'AbortError') console.error(e);
+    }
+  }
+
+  // --- Keyboard shortcuts ---
+  document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.key === 's') { e.preventDefault(); saveFile(); }
+    if (e.ctrlKey && e.key === 'o') { e.preventDefault(); openFile(); }
+    if (e.ctrlKey && e.key === 'n') { e.preventDefault(); newFile(); }
+  });
+
+  editor.addEventListener('keydown', (e) => {
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      const start = editor.selectionStart;
+      const end = editor.selectionEnd;
+      editor.value = editor.value.substring(0, start) + '\t' + editor.value.substring(end);
+      editor.selectionStart = editor.selectionEnd = start + 1;
+      markDirty();
+    }
+  });
+
+  updateTitle('untitled');
+</script>
+</body>
+</html>
