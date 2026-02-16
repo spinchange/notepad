@@ -12,7 +12,12 @@ A single-file browser notepad with real file system access. No server, no depend
 - **Letterhead/branding** — add a logo and company name as stationery
 - **Custom colors** — change editor background and text color
 - **Background image** — use any image as editor wallpaper
-- **Keyboard shortcuts** — Ctrl+S (save), Ctrl+O (open), Ctrl+N (new)
+- **Read mode** — toggle between editing and a formatted reading view
+- **Inline formatting** — `**bold**`, `*italic*`, `` `code` ``, `> blockquotes`, and auto-linked URLs
+- **Timestamped entries** — lines like `[12:30:45 @MACHINE] text #tag` render as cards with time sidebar and machine badge
+- **Hashtag filtering** — `#tags` appear as clickable pills; click one to filter entries by that tag
+- **Search** — real-time search bar in read mode to filter entries by text
+- **Keyboard shortcuts** — Ctrl+S (save), Ctrl+O (open), Ctrl+N (new), Ctrl+R (read mode)
 - **Tab key** inserts a tab character
 - **Unsaved changes warning** before closing or switching files
 - **Print-friendly** — letterhead shows in print, toolbar hides
@@ -29,6 +34,7 @@ Open `index.html` in Chrome or Edge, or visit the GitHub Pages link above. Bookm
 | Ctrl+S | Save |
 | Ctrl+O | Open |
 | Ctrl+N | New |
+| Ctrl+R | Toggle read mode |
 | Tab | Insert tab |
 
 ### Settings
@@ -47,6 +53,20 @@ Click the **Settings** button to:
 2. Click the dashed box or **Choose** to pick a logo image
 3. Type your name or company in the text field
 4. Everything saves automatically — it will be there next time you open the page
+
+### Read Mode
+
+Click the **Read** button (or Ctrl+R) to switch from editing to a formatted view:
+
+- `=== Sunday, February 15, 2026 ===` becomes a styled date header
+- `[12:30:45 @LUNA] journal entry #tag` renders as a card with timestamp, machine badge, and tag pills
+- `#hashtags` become clickable filters — click one to show only matching entries
+- URLs become clickable links
+- `**bold**`, `*italic*`, `` `code` ``, and `> blockquotes` are rendered inline
+- A search bar at the top filters entries in real-time
+- Click **Edit** to return to the raw text editor
+
+Works great with plain text journals, logs, or any structured text — but also handles plain unformatted text just fine.
 
 ## Browser Support
 
