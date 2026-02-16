@@ -422,7 +422,7 @@
     // Search bar
     const sq = searchQuery || '';
     html += '<div class="search-bar">';
-    html += `<input type="text" placeholder="Search entries..." value="${sq.replace(/"/g, '&quot;')}" oninput="renderReadMode(this.value)">`;
+    html += `<input type="text" placeholder="Search..." value="${sq.replace(/"/g, '&quot;')}" oninput="renderReadMode(this.value)">`;
     if (sq || activeTagFilter) html += '<button class="clear-btn" onclick="clearFilters()">Clear</button>';
     html += '</div>';
 
