@@ -21,6 +21,9 @@
   .separator { width: 1px; height: 20px; background: #ccc; margin: 0 4px; }
   #filename { margin-left: 12px; color: #555; font-size: 13px; }
   #modified { color: #c00; font-size: 13px; margin-left: 4px; }
+  #wordcount { margin-left: auto; color: #333; font-size: 13px; font-weight: 600; }
+  #timer { cursor: pointer; color: #333; font-size: 13px; font-weight: 600; font-family: Consolas, 'Courier New', monospace; margin-left: 8px; user-select: none; }
+  #timer.running { color: #4a4; }
   #brand-bar {
     display: none; padding: 12px 16px; align-items: center; gap: 12px;
     border-bottom: 1px solid #ccc; background: #fafafa;
@@ -184,9 +187,8 @@
   body.dark #toolbar button.active { background: #2a3a4a; border-color: #5588aa; }
   body.dark .separator { background: #555; }
   body.dark #filename { color: #aaa; }
-  body.dark #wordcount { color: #777; }
-  body.dark #timer { color: #777; }
-  #timer.running { color: #4a4; }
+  body.dark #wordcount { color: #bbb; }
+  body.dark #timer { color: #bbb; }
   body.dark #timer.running { color: #6c6; }
   body.dark #modified { color: #f66; }
   body.dark #brand-bar { background: #252525; border-bottom-color: #444; }
@@ -228,7 +230,7 @@
   }
 </style>
 </head>
-<body class="dark">
+<body>
 <div id="toolbar">
   <button onclick="newFile()">New</button>
   <button onclick="openFile()">Open</button>
@@ -237,13 +239,15 @@
   <div class="separator"></div>
   <button onclick="toggleReadMode()" id="readBtn">Read</button>
   <div class="separator"></div>
-  <button onclick="toggleTheme()" id="themeBtn">Light</button>
+  <button onclick="toggleTheme()" id="themeBtn">Dark</button>
   <button onclick="toggleSettings()">Settings</button>
+  <button onclick="copyToClipboard()">Copy</button>
+  <button onclick="emailDraft()">Email</button>
   <button onclick="toggleHelp()">Help</button>
   <span id="filename">untitled</span>
   <span id="modified"></span>
-  <span id="wordcount" style="margin-left:auto;color:#555;font-size:13px"></span>
-  <span id="timer" onclick="toggleTimer()" title="Click to start/stop, double-click to reset" style="cursor:pointer;color:#555;font-size:13px;font-family:Consolas,'Courier New',monospace;margin-left:8px;user-select:none">0:00</span>
+  <span id="wordcount"></span>
+  <span id="timer" onclick="toggleTimer()" title="Click to start/stop, double-click to reset">0:00</span>
 </div>
 <div id="settings-panel">
   <label>
@@ -291,6 +295,7 @@
     <tr><td><code>Ctrl+N</code></td><td>New</td></tr>
     <tr><td><code>Ctrl+R</code></td><td>Toggle read mode</td></tr>
     <tr><td><code>Tab</code></td><td>Insert tab</td></tr>
+    <tr><td><code>Email</code></td><td>Open Gmail compose with content</td></tr>
   </table>
   <h3>Formatting (visible in Read mode)</h3>
   <table>
@@ -468,9 +473,9 @@
 
   // --- Restore settings ---
   function restoreSettings() {
-    if (localStorage.getItem('notepad-theme') === 'light') {
-      document.body.classList.remove('dark');
-      themeBtn.textContent = 'Dark';
+    if (localStorage.getItem('notepad-theme') === 'dark') {
+      document.body.classList.add('dark');
+      themeBtn.textContent = 'Light';
     }
     if (localStorage.getItem('notepad-showBrand') === 'true') {
       showBrandCheck.checked = true;
@@ -738,6 +743,25 @@
     } catch (e) {
       if (e.name !== 'AbortError') console.error(e);
     }
+  }
+
+  // --- Copy to clipboard ---
+  async function copyToClipboard() {
+    try {
+      await navigator.clipboard.writeText(editor.value);
+      const btn = event.target;
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = 'Copy', 1500);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  // --- Email draft (Gmail compose) ---
+  function emailDraft() {
+    const subject = encodeURIComponent(filenameEl.textContent || 'Notepad');
+    const body = encodeURIComponent(editor.value);
+    window.open('https://mail.google.com/mail/?view=cm&su=' + subject + '&body=' + body, '_blank');
   }
 
   // --- Keyboard shortcuts ---
