@@ -8,7 +8,7 @@ A single-file browser notepad with real file system access. No server, no depend
 
 - **Open, edit, and save** plain text files directly on your computer
 - **Save in place** — no download dialog after the first save
-- **Dark/Light mode** with toggle and persistent preference
+- **Light/Dark mode** with toggle and persistent preference (defaults to light)
 - **Letterhead/branding** — add a logo and company name as stationery
 - **Custom colors** — change editor background and text color
 - **Background image** — use any image as editor wallpaper
@@ -23,6 +23,8 @@ A single-file browser notepad with real file system access. No server, no depend
 - **Word count** — live word count in the toolbar
 - **Stopwatch timer** — click to start/stop, double-click to reset
 - **Font size control** — adjustable slider in settings (10px–32px)
+- **Copy button** — copy editor text to clipboard with one click
+- **Email button** — open Gmail compose with content pre-filled as a draft
 - **Help button** — in-app formatting reference, shortcuts, and link to README
 - **Keyboard shortcuts** — Ctrl+S (save), Ctrl+O (open), Ctrl+N (new), Ctrl+R (read mode)
 - **Tab key** inserts a tab character
