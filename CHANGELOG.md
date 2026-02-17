@@ -6,6 +6,7 @@
 - Add **Email** button — opens Gmail compose with content pre-filled
 - Default theme changed to **light mode** (dark still persists via localStorage)
 - Fix timer and word count styling to respond correctly to light/dark toggle
+- Fix search bar in read mode losing focus after each keystroke
 
 ## 2026-02-15
 
