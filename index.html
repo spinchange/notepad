@@ -325,7 +325,14 @@
 </div>
 <div id="content-area">
   <textarea id="editor" spellcheck="false"></textarea>
-  <div id="reader"></div>
+  <div id="reader">
+    <div class="search-bar" id="search-bar" style="display:none">
+      <input type="text" id="searchInput" placeholder="Search..." oninput="renderReadMode()">
+      <button class="clear-btn" id="clearBtn" onclick="clearFilters()" style="display:none">Clear</button>
+    </div>
+    <div id="activeFilterEl"></div>
+    <div id="reader-content"></div>
+  </div>
 </div>
 <input type="file" id="logoInput" accept="image/*" style="display:none">
 <input type="file" id="bgInput" accept="image/*" style="display:none">
@@ -497,13 +504,24 @@
   restoreSettings();
 
   // --- Read mode ---
+  const searchInput = document.getElementById('searchInput');
+  const searchBar = document.getElementById('search-bar');
+  const clearBtn = document.getElementById('clearBtn');
+  const activeFilterEl = document.getElementById('activeFilterEl');
+  const readerContent = document.getElementById('reader-content');
+
   function toggleReadMode() {
     inReadMode = !inReadMode;
     editor.style.display = inReadMode ? 'none' : '';
     reader.classList.toggle('visible', inReadMode);
     readBtn.textContent = inReadMode ? 'Edit' : 'Read';
     readBtn.classList.toggle('active', inReadMode);
-    if (inReadMode) renderReadMode();
+    if (inReadMode) {
+      searchBar.style.display = 'flex';
+      renderReadMode();
+    } else {
+      searchBar.style.display = 'none';
+    }
   }
 
   function formatInlineText(text) {
@@ -524,23 +542,23 @@
     return text;
   }
 
-  function renderReadMode(searchQuery) {
+  function renderReadMode() {
     const text = editor.value;
     const lines = text.split('\n');
     let html = '';
 
-    // Search bar
-    const sq = searchQuery || '';
-    html += '<div class="search-bar">';
-    html += `<input type="text" placeholder="Search..." value="${sq.replace(/"/g, '&quot;')}" oninput="renderReadMode(this.value)">`;
-    if (sq || activeTagFilter) html += '<button class="clear-btn" onclick="clearFilters()">Clear</button>';
-    html += '</div>';
-
-    if (activeTagFilter) {
-      html += `<div class="active-filter">Filtering: #${activeTagFilter} <span class="remove-filter" onclick="clearTagFilter()">x</span></div>`;
-    }
-
+    const sq = searchInput.value || '';
     const query = sq.toLowerCase();
+
+    // Show/hide clear button
+    clearBtn.style.display = (sq || activeTagFilter) ? '' : 'none';
+
+    // Active tag filter
+    if (activeTagFilter) {
+      activeFilterEl.innerHTML = `<div class="active-filter">Filtering: #${activeTagFilter} <span class="remove-filter" onclick="clearTagFilter()">x</span></div>`;
+    } else {
+      activeFilterEl.innerHTML = '';
+    }
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
@@ -618,22 +636,23 @@
       html += `<div class="plain-line">${formatInlineText(line)}</div>`;
     }
 
-    reader.innerHTML = html;
+    readerContent.innerHTML = html;
   }
 
   function filterByTag(tag) {
     activeTagFilter = tag;
-    renderReadMode(reader.querySelector('.search-bar input')?.value || '');
+    renderReadMode();
   }
 
   function clearTagFilter() {
     activeTagFilter = '';
-    renderReadMode(reader.querySelector('.search-bar input')?.value || '');
+    renderReadMode();
   }
 
   function clearFilters() {
     activeTagFilter = '';
-    renderReadMode('');
+    searchInput.value = '';
+    renderReadMode();
   }
 
   // --- File operations ---
