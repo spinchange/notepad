@@ -10,6 +10,7 @@ A full-featured text editor in a single HTML file. No server, no dependencies, n
 - **Save in place** — no download dialog after the first save
 - **Light/Dark mode** with toggle and persistent preference (defaults to light)
 - **Letterhead/branding** — add a logo and company name as stationery
+- **Export for team** — bake your logo and brand name into a distributable HTML file; recipients get the letterhead by default with no setup
 - **Custom colors** — change editor background and text color
 - **Background image** — use any image as editor wallpaper
 - **Read mode** — toggle between editing and a formatted reading view
@@ -54,6 +55,7 @@ Click the **Settings** button to:
 
 - Toggle the letterhead bar (logo + name)
 - Choose or remove a logo image
+- Export a pre-branded copy for your team
 - Choose font family
 - Adjust font size
 - Adjust line spacing
@@ -67,6 +69,15 @@ Click the **Settings** button to:
 2. Click the dashed box or **Choose** to pick a logo image
 3. Type your name or company in the text field
 4. Everything saves automatically — it will be there next time you open the page
+
+### Export for Team
+
+Once your letterhead is configured, click **Settings → Export for team…** to generate a distributable copy:
+
+- Your logo (embedded as base64) and company name are hardcoded into the file as defaults
+- Recipients open the HTML file and see your letterhead immediately — no setup required
+- They can still toggle the letterhead on/off; their preference saves to their own localStorage
+- Distribute `notepad-company.html` however you like — email, shared drive, intranet
 
 ### Read Mode
 
