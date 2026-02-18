@@ -265,6 +265,9 @@
     </span>
   </div>
   <div class="setting-row">
+    <button onclick="exportForTeam()">Export for team…</button>
+  </div>
+  <div class="setting-row">
     <span class="setting-label">Font</span>
     <select id="fontFamily" onchange="setFontFamily(this.value)">
       <option value="">Default</option>
@@ -946,6 +949,53 @@ ${content}
     const a = document.createElement('a');
     a.href = url;
     a.download = docName + '.doc';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  // --- Export for team ---
+  async function exportForTeam() {
+    const logo = localStorage.getItem('notepad-logo') || '';
+    const brand = localStorage.getItem('notepad-brandText') || '';
+    if (!logo && !brand) {
+      alert('Add a logo or company name in Settings \u2192 letterhead first.');
+      return;
+    }
+    let html;
+    try {
+      const resp = await fetch(location.href);
+      html = await resp.text();
+    } catch (e) {
+      alert('Could not read source file. Try opening from a web server.');
+      return;
+    }
+    // Normalize line endings
+    html = html.replace(/\r\n/g, '\n');
+    // Inject company constants at the top of the script
+    const consts = `\n  const COMPANY_LOGO = ${JSON.stringify(logo)};\n  const COMPANY_BRAND = ${JSON.stringify(brand)};\n`;
+    html = html.replace('  let fileHandle = null;', consts + '  let fileHandle = null;');
+    // Default showBrand to true when company branding is present
+    html = html.replace(
+      `    if (localStorage.getItem('notepad-showBrand') === 'true') {\n      showBrandCheck.checked = true;\n      brandBar.classList.add('visible');\n    }`,
+      `    const _sb = localStorage.getItem('notepad-showBrand');\n    if (_sb === 'true' || (_sb === null && (COMPANY_LOGO || COMPANY_BRAND))) {\n      showBrandCheck.checked = true;\n      brandBar.classList.add('visible');\n    }`
+    );
+    // Fall back to company logo
+    html = html.replace(
+      `    const logo = localStorage.getItem('notepad-logo');\n    if (logo) setLogo(logo);`,
+      `    const logo = localStorage.getItem('notepad-logo') || COMPANY_LOGO;\n    if (logo) setLogo(logo);`
+    );
+    // Fall back to company brand name
+    html = html.replace(
+      `    const bt = localStorage.getItem('notepad-brandText');\n    if (bt) brandText.value = bt;`,
+      `    const bt = localStorage.getItem('notepad-brandText') || COMPANY_BRAND;\n    if (bt) brandText.value = bt;`
+    );
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'notepad-company.html';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
