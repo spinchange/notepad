@@ -173,6 +173,7 @@
   #settings-panel input[type="color"] { width: 32px; height: 24px; border: 1px solid #aaa; border-radius: 3px; cursor: pointer; }
   #settings-panel input[type="range"] { width: 100px; cursor: pointer; }
   #settings-panel .font-size-val { font-size: 13px; min-width: 32px; text-align: center; }
+  #settings-panel select { font-size: 12px; padding: 2px 4px; border: 1px solid #aaa; border-radius: 3px; background: #fff; color: #000; cursor: pointer; }
   #settings-panel button {
     padding: 3px 10px; border: 1px solid #aaa; background: #f5f5f5;
     border-radius: 3px; cursor: pointer; font-size: 12px; color: #333;
@@ -220,6 +221,7 @@
   body.dark #settings-panel label { color: #ddd; }
   body.dark #settings-panel button { background: #3c3c3c; border-color: #555; color: #ddd; }
   body.dark #settings-panel button:hover { background: #505050; }
+  body.dark #settings-panel select { background: #3c3c3c; border-color: #555; color: #ddd; }
 
   @media print {
     #toolbar, #settings-panel { display: none !important; }
@@ -262,10 +264,29 @@
     </span>
   </div>
   <div class="setting-row">
+    <span class="setting-label">Font</span>
+    <select id="fontFamily" onchange="setFontFamily(this.value)">
+      <option value="">Default</option>
+      <option value="Segoe UI">Segoe UI</option>
+      <option value="Arial">Arial</option>
+      <option value="Verdana">Verdana</option>
+      <option value="Georgia">Georgia</option>
+      <option value="Times New Roman">Times New Roman</option>
+      <option value="Consolas">Consolas</option>
+    </select>
+  </div>
+  <div class="setting-row">
     <span class="setting-label">Font size</span>
     <span style="display:flex;align-items:center;gap:4px">
       <input type="range" id="fontSize" min="10" max="32" value="14" oninput="setFontSize(this.value)">
       <span class="font-size-val" id="fontSizeVal">14px</span>
+    </span>
+  </div>
+  <div class="setting-row">
+    <span class="setting-label">Line spacing</span>
+    <span style="display:flex;align-items:center;gap:4px">
+      <input type="range" id="lineSpacing" min="1.2" max="2.4" step="0.1" value="1.6" oninput="setLineSpacing(this.value)">
+      <span class="font-size-val" id="lineSpacingVal">1.6</span>
     </span>
   </div>
   <div class="setting-row">
@@ -360,6 +381,9 @@
   const bgInput = document.getElementById('bgInput');
   const fontSizeInput = document.getElementById('fontSize');
   const fontSizeVal = document.getElementById('fontSizeVal');
+  const fontFamilyInput = document.getElementById('fontFamily');
+  const lineSpacingInput = document.getElementById('lineSpacing');
+  const lineSpacingVal = document.getElementById('lineSpacingVal');
 
   // --- Theme ---
   function toggleTheme() {
@@ -427,6 +451,23 @@
     localStorage.setItem('notepad-brandText', brandText.value);
   });
 
+  // --- Font family ---
+  function setFontFamily(family) {
+    editor.style.fontFamily = family || '';
+    reader.style.fontFamily = family || '';
+    fontFamilyInput.value = family;
+    localStorage.setItem('notepad-fontFamily', family);
+  }
+
+  // --- Line spacing ---
+  function setLineSpacing(spacing) {
+    editor.style.lineHeight = spacing;
+    reader.style.lineHeight = spacing;
+    lineSpacingInput.value = spacing;
+    lineSpacingVal.textContent = parseFloat(spacing).toFixed(1);
+    localStorage.setItem('notepad-lineSpacing', spacing);
+  }
+
   // --- Font size ---
   function setFontSize(size) {
     editor.style.fontSize = size + 'px';
@@ -474,7 +515,8 @@
   function resetSettings() {
     if (!confirm('Reset all settings to defaults?')) return;
     ['notepad-theme','notepad-showBrand','notepad-logo','notepad-brandText',
-     'notepad-fontSize','notepad-bgColor','notepad-fgColor','notepad-bgImage'].forEach(k => localStorage.removeItem(k));
+     'notepad-fontSize','notepad-fontFamily','notepad-lineSpacing',
+     'notepad-bgColor','notepad-fgColor','notepad-bgImage'].forEach(k => localStorage.removeItem(k));
     location.reload();
   }
 
@@ -492,8 +534,12 @@
     if (logo) setLogo(logo);
     const bt = localStorage.getItem('notepad-brandText');
     if (bt) brandText.value = bt;
+    const ff = localStorage.getItem('notepad-fontFamily');
+    if (ff) setFontFamily(ff);
     const fs = localStorage.getItem('notepad-fontSize');
     if (fs) setFontSize(fs);
+    const ls = localStorage.getItem('notepad-lineSpacing');
+    if (ls) setLineSpacing(ls); else setLineSpacing(1.6);
     const bg = localStorage.getItem('notepad-bgColor');
     if (bg) { editor.style.background = bg; bgColorInput.value = bg; }
     const fg = localStorage.getItem('notepad-fgColor');
