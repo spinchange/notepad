@@ -914,10 +914,10 @@
 
     let headerHtml = '';
     if (showBrand && (logo || brandName)) {
-      headerHtml = '<div style="display:flex;align-items:center;gap:12px;border-bottom:2px solid #ccc;padding-bottom:12px;margin-bottom:20px;">';
-      if (logo) headerHtml += `<img src="${logo}" style="max-height:60px;max-width:200px;">`;
-      if (brandName) headerHtml += `<span style="font-size:16pt;font-weight:600;">${brandName}</span>`;
-      headerHtml += '</div>';
+      headerHtml = '<table width="100%" style="border-bottom:2px solid #ccc;padding-bottom:12px;margin-bottom:20px;" cellpadding="0" cellspacing="0"><tr>';
+      if (logo) headerHtml += `<td width="1%" style="padding-right:14px;vertical-align:middle;white-space:nowrap;"><img src="${logo}" height="60" style="height:60px;max-width:200px;"></td>`;
+      if (brandName) headerHtml += `<td style="vertical-align:middle;font-size:16pt;font-weight:600;">${brandName}</td>`;
+      headerHtml += '</tr></table>';
     }
 
     const content = formatContentForWord(editor.value);
