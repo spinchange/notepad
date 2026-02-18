@@ -1,3 +1,5 @@
+<img src="notebook.svg" width="80" align="right">
+
 # Notepad
 
 A full-featured text editor in a single HTML file. No server, no dependencies, no install.
