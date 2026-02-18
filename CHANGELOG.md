@@ -2,7 +2,6 @@
 
 ## 2026-02-17
 
-- Add **Export for team** — Settings → "Export for team…" generates a distributable HTML copy with the current logo (base64) and company name hardcoded as defaults; recipients see the letterhead on first open with no setup; they can still toggle it on/off with their own localStorage preference
 - Add **Word export** — toolbar "Word" button downloads a `.doc` file with markdown formatting converted and optional letterhead included
 - Add **font family picker** in settings — choose from system fonts (Segoe UI, Arial, Verdana, Georgia, Times New Roman, Consolas) with no external dependencies
 - Add **line spacing slider** in settings (1.2–2.4, defaults to 1.6)
