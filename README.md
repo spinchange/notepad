@@ -22,7 +22,9 @@ A single-file browser notepad with real file system access. No server, no depend
 - **Search** — real-time search bar in read mode to filter entries by text
 - **Word count** — live word count in the toolbar
 - **Stopwatch timer** — click to start/stop, double-click to reset
+- **Font family picker** — choose from system fonts (Segoe UI, Arial, Verdana, Georgia, Times New Roman, Consolas); no external dependencies
 - **Font size control** — adjustable slider in settings (10px–32px)
+- **Line spacing control** — adjustable slider in settings (1.2–2.4)
 - **Copy button** — copy editor text to clipboard with one click
 - **Email button** — open Gmail compose with content pre-filled as a draft
 - **Help button** — in-app formatting reference, shortcuts, and link to README
@@ -52,7 +54,9 @@ Click the **Settings** button to:
 
 - Toggle the letterhead bar (logo + name)
 - Choose or remove a logo image
+- Choose font family
 - Adjust font size
+- Adjust line spacing
 - Pick editor background and text colors
 - Set a background image
 - Reset everything to defaults
