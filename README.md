@@ -1,6 +1,6 @@
 # Notepad
 
-A single-file browser notepad with real file system access. No server, no dependencies, no install.
+A full-featured text editor in a single HTML file. No server, no dependencies, no install.
 
 **Live:** [https://spinchange.github.io/notepad/](https://spinchange.github.io/notepad/)
 
