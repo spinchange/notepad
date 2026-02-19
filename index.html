@@ -223,12 +223,22 @@
   body.dark #settings-panel button:hover { background: #505050; }
   body.dark #settings-panel select { background: #3c3c3c; border-color: #555; color: #ddd; }
 
+  /* Watermark */
+  #watermark {
+    display: none; position: absolute; inset: 0;
+    pointer-events: none; z-index: 10;
+    align-items: center; justify-content: center;
+  }
+  #watermark.visible { display: flex; }
+  #watermark img { max-width: 40%; max-height: 40%; object-fit: contain; }
+
   @media print {
     #toolbar, #settings-panel { display: none !important; }
     #brand-bar.visible { display: flex !important; }
     #editor, #reader { overflow: visible; }
     #reader .search-bar { display: none !important; }
     #reader .active-filter { display: none !important; }
+    #watermark { display: none !important; }
   }
 </style>
 </head>
@@ -306,6 +316,20 @@
     </span>
   </div>
   <div class="setting-row">
+    <span class="setting-label">Watermark</span>
+    <span>
+      <button onclick="pickWatermark()">Choose</button>
+      <button onclick="removeWatermark()">Remove</button>
+    </span>
+  </div>
+  <div class="setting-row" id="watermark-opacity-row" style="display:none">
+    <span class="setting-label">Watermark opacity</span>
+    <span style="display:flex;align-items:center;gap:4px">
+      <input type="range" id="watermarkOpacity" min="2" max="30" value="8" oninput="setWatermarkOpacity(this.value)">
+      <span class="font-size-val" id="watermarkOpacityVal">8%</span>
+    </span>
+  </div>
+  <div class="setting-row">
     <button onclick="resetSettings()">Reset all settings</button>
   </div>
 </div>
@@ -346,6 +370,7 @@
   <input type="text" id="brand-text" placeholder="Your name or company">
 </div>
 <div id="content-area">
+  <div id="watermark"><img id="watermark-img"></div>
   <textarea id="editor" spellcheck="false"></textarea>
   <div id="reader">
     <div class="search-bar" id="search-bar" style="display:none">
@@ -358,6 +383,7 @@
 </div>
 <input type="file" id="logoInput" accept="image/*" style="display:none">
 <input type="file" id="bgInput" accept="image/*" style="display:none">
+<input type="file" id="watermarkInput" accept="image/*" style="display:none">
 <script>
   let fileHandle = null;
   let savedContent = '';
@@ -512,12 +538,54 @@
     localStorage.removeItem('notepad-bgImage');
   }
 
+  // --- Watermark ---
+  const watermarkEl = document.getElementById('watermark');
+  const watermarkImg = document.getElementById('watermark-img');
+  const watermarkInput = document.getElementById('watermarkInput');
+  const watermarkOpacityRow = document.getElementById('watermark-opacity-row');
+  const watermarkOpacityInput = document.getElementById('watermarkOpacity');
+  const watermarkOpacityVal = document.getElementById('watermarkOpacityVal');
+
+  function pickWatermark() { watermarkInput.click(); }
+  watermarkInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const r = new FileReader();
+    r.onload = () => {
+      setWatermark(r.result);
+      localStorage.setItem('notepad-watermark', r.result);
+    };
+    r.readAsDataURL(file);
+    watermarkInput.value = '';
+  });
+  function setWatermark(dataUrl, opacity) {
+    watermarkImg.src = dataUrl;
+    watermarkEl.classList.add('visible');
+    watermarkOpacityRow.style.display = '';
+    const op = opacity !== undefined ? opacity : (localStorage.getItem('notepad-watermarkOpacity') || 8);
+    setWatermarkOpacity(op);
+  }
+  function removeWatermark() {
+    watermarkImg.src = '';
+    watermarkEl.classList.remove('visible');
+    watermarkOpacityRow.style.display = 'none';
+    localStorage.removeItem('notepad-watermark');
+    localStorage.removeItem('notepad-watermarkOpacity');
+  }
+  function setWatermarkOpacity(val) {
+    watermarkImg.style.opacity = val / 100;
+    watermarkOpacityInput.value = val;
+    watermarkOpacityVal.textContent = val + '%';
+    localStorage.setItem('notepad-watermarkOpacity', val);
+  }
+
   // --- Reset ---
   function resetSettings() {
     if (!confirm('Reset all settings to defaults?')) return;
     ['notepad-theme','notepad-showBrand','notepad-logo','notepad-brandText',
      'notepad-fontSize','notepad-fontFamily','notepad-lineSpacing',
-     'notepad-bgColor','notepad-fgColor','notepad-bgImage'].forEach(k => localStorage.removeItem(k));
+     'notepad-bgColor','notepad-fgColor','notepad-bgImage',
+     'notepad-watermark','notepad-watermarkOpacity'].forEach(k => localStorage.removeItem(k));
     location.reload();
   }
 
@@ -547,6 +615,8 @@
     if (fg) { editor.style.color = fg; fgColorInput.value = fg; }
     const bgImg = localStorage.getItem('notepad-bgImage');
     if (bgImg) setBgImage(bgImg);
+    const wm = localStorage.getItem('notepad-watermark');
+    if (wm) setWatermark(wm);
   }
   restoreSettings();
 
