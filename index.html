@@ -233,9 +233,11 @@
   #watermark img { max-width: 40%; max-height: 40%; object-fit: contain; }
 
   @media print {
-    #toolbar, #settings-panel { display: none !important; }
+    #toolbar, #settings-panel, #help-panel { display: none !important; }
     #brand-bar.visible { display: flex !important; }
-    #editor, #reader { overflow: visible; }
+    body { height: auto; }
+    #content-area { flex: none; min-height: auto; }
+    #editor, #reader { overflow: visible; height: auto; flex: none; }
     #reader .search-bar { display: none !important; }
     #reader .active-filter { display: none !important; }
     #watermark { display: none !important; }
