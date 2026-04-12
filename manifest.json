@@ -1,0 +1,31 @@
+{
+  "name": "Notepad",
+  "short_name": "Notepad",
+  "description": "Simple browser notepad — open, edit, and save files locally.",
+  "start_url": "/notepad/",
+  "scope": "/notepad/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#f0f0f0",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "share_target": {
+    "action": "/notepad/",
+    "method": "GET",
+    "params": {
+      "text": "text",
+      "title": "title",
+      "url": "url"
+    }
+  }
+}

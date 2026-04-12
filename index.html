@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='15' y='8' width='50' height='65' rx='3' fill='%23f5f5dc' stroke='%23555' stroke-width='3'/><line x1='25' y1='25' x2='55' y2='25' stroke='%23aaa' stroke-width='2'/><line x1='25' y1='35' x2='55' y2='35' stroke='%23aaa' stroke-width='2'/><line x1='25' y1='45' x2='45' y2='45' stroke='%23aaa' stroke-width='2'/><rect x='58' y='50' width='8' height='38' rx='2' transform='rotate(-30 62 69)' fill='%23f4c430' stroke='%23555' stroke-width='2'/><polygon points='49,84 53,74 57,78' fill='%23555'/></svg>">
+<link rel="manifest" href="manifest.json">
 <title>Notepad</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -1445,6 +1446,19 @@ ${content}
   });
 
   updateTitle('untitled');
+
+  // Web Share Target: when another app shares text/url to Notepad, it lands as query params
+  const _sp = new URLSearchParams(location.search);
+  if (_sp.has('text') || _sp.has('title') || _sp.has('url')) {
+    const _parts = [_sp.get('title'), _sp.get('text'), _sp.get('url')].filter(Boolean);
+    editor.value = _parts.join('\n');
+    markDirty();
+    history.replaceState(null, '', location.pathname);
+  }
+
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/notepad/sw.js');
+  }
 </script>
 </body>
 </html>
