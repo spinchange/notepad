@@ -1342,12 +1342,13 @@
         updateTitle(fileHandle.name);
         markDirty();
         if (inReadMode) renderReadMode();
+        return;
       } catch (e) {
-        if (e.name !== 'AbortError') console.error(e);
+        if (e.name === 'AbortError') return;
+        // API exists but failed (e.g. mobile Chrome partial support) — fall through
       }
-    } else {
-      document.getElementById('openInput').click();
     }
+    document.getElementById('openInput').click();
   }
 
   document.getElementById('openInput').addEventListener('change', async (e) => {
@@ -1388,10 +1389,13 @@
         });
         await saveFile();
         updateTitle(fileHandle.name);
+        return;
       } catch (e) {
-        if (e.name !== 'AbortError') console.error(e);
+        if (e.name === 'AbortError') return;
+        // fall through to download fallback
       }
-    } else {
+    }
+    {
       const name = fileHandle ? fileHandle.name : getCurrentFilename();
       const blob = new Blob([editor.value], { type: 'text/plain' });
       const url = URL.createObjectURL(blob);
