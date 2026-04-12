@@ -3,6 +3,7 @@
 <img src="notebook.svg" width="80" align="right">
 
 A full-featured text editor in a single HTML file. No server, no dependencies, no install.
+Now an Installable Progressive Web Application (Chromium-based browsers)
 
 **Live:** [https://spinchange.github.io/notepad/](https://spinchange.github.io/notepad/)
 
