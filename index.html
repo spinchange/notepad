@@ -958,9 +958,9 @@
         continue;
       }
 
-      const fenceMatch = line.match(/^```(\w+)?\s*$/);
+      const fenceMatch = line.match(/^```([^`]*)$/);
       if (fenceMatch) {
-        const lang = fenceMatch[1] || '';
+        const lang = fenceMatch[1].trim().split(/\s+/)[0] || '';
         const codeLines = [];
         i++;
         while (i < lines.length && !/^```/.test(lines[i])) {
