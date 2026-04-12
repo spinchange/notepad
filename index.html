@@ -400,8 +400,8 @@
     #toolbar button { padding: 4px 9px; font-size: 12px; }
     #editor { font-size: 16px; } /* prevent iOS auto-zoom on focus */
     #reader { padding: 14px 16px; }
-    #reader .markdown-layout { grid-template-columns: 1fr; }
-    #reader .markdown-toc { position: static; max-height: none; }
+    #reader .markdown-layout { display: block; }
+    #reader .markdown-toc { position: static; max-height: none; margin-bottom: 20px; }
   }
   @media print {
     #toolbar, #settings-panel, #help-panel { display: none !important; }
