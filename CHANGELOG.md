@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-04-12 (continued)
+
+- Add **table of contents** — `toc: true` in frontmatter renders a sticky left-sidebar TOC with anchor links, indented by heading level; collapses to single column on narrow screens; hidden on print
+- Add **frontmatter fields** `project`, `priority`, and `due` — displayed as labeled pills in the markdown read mode header bar alongside the existing `status`, `date`, `author`, and `tags` fields
+
 ## 2026-04-12
 
 - Add **PWA support** — installable from Chrome/Edge; `manifest.json` + `sw.js` cache core assets for offline use; icon at 192px and 512px

@@ -18,7 +18,8 @@ A full-featured text editor in a single HTML file. No server, no dependencies, n
 - **Web Share Target** — once installed, appears as a share destination in Android Chrome; shared text/URL lands directly in the editor
 - **Read mode** — toggle between editing and a formatted reading view
 - **Markdown rendering** — open a `.md` or `.markdown` file and Read mode renders it with full markdown (headings, lists, tables with column alignment, code blocks with language tag, blockquotes, images, links, inline styles, hard line breaks)
-- **YAML frontmatter** — optional `---` metadata block at the top of a `.md` file renders as a header bar (`title`, `status`, `date`, `author`, `tags`)
+- **YAML frontmatter** — optional `---` metadata block at the top of a `.md` file renders as a header bar (`title`, `project`, `status`, `priority`, `due`, `date`, `author`, `tags`)
+- **Table of contents** — add `toc: true` to frontmatter for a sticky sidebar TOC with anchor links, indented by heading level
 - **Inline formatting** — `**bold**`, `*italic*`, `~~strikethrough~~`, `` `code` ``, `> blockquotes`, and auto-linked URLs
 - **Headings** — `#`, `##`, `###` rendered as styled headings
 - **Lists** — `- item` or `* item` rendered as bullet lists
@@ -80,7 +81,9 @@ Click the **Settings** button to:
 
 Click the **Read** button (or Ctrl+R) to switch from editing to a formatted view.
 
-**Markdown files** (`.md`, `.markdown`): full markdown rendering with headings, lists, ordered lists, tables, fenced code blocks, blockquotes, images, links, inline styles, and horizontal rules. An optional YAML frontmatter block at the top of the file is parsed and shown as a metadata header bar rather than rendered as body text. Use browser Ctrl+F to search within the rendered content.
+**Markdown files** (`.md`, `.markdown`): full markdown rendering with headings, lists, ordered lists, tables, fenced code blocks, blockquotes, images, links, inline styles, and horizontal rules. An optional YAML frontmatter block at the top of the file is parsed and shown as a metadata header bar rather than rendered as body text. Add `toc: true` to frontmatter for a sticky sidebar table of contents. Use browser Ctrl+F to search within the rendered content.
+
+Frontmatter keys shown in the header bar: `title`, `project`, `status`, `priority`, `due`, `date`, `author`, `tags`. Any other keys are parsed and ignored.
 
 **Plain text / journal files**: the notepad renderer applies a lightweight format:
 - `=== Sunday, February 15, 2026 ===` becomes a styled date header

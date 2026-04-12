@@ -1,4 +1,4 @@
-const CACHE = 'notepad-v5';
+const CACHE = 'notepad-v6';
 const ASSETS = [
   '/notepad/',
   '/notepad/index.html',
