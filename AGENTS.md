@@ -66,4 +66,11 @@ This file records repo-specific agent guidance and durable notes discovered whil
 - Fix 3: paragraph loop break updated to `/^`{3,}/`.
 - Fix 4: safety guard added — if `paragraphLines` is empty after the loop, `i++` unconditionally. Prevents any future unknown trigger from causing a freeze.
 
-**Next:** Chrome Extension companion for tab capture.
+**Built:** Chrome Extension companion in `extension/` — 5 files, no dependencies, MV3.
+- `manifest.json` — permissions: activeTab, scripting, storage; content_scripts match notepad URL
+- `popup.html` + `popup.js` — captures selection or full page, converts HTML→Markdown, writes to chrome.storage.local
+- `htmlToMarkdown.js` — standalone DOM-based converter (headings, links, lists, tables, code blocks, blockquotes)
+- `content_notepad.js` — injected on Notepad tab; watches storage, inserts into #editor, fires input event
+- Keyboard shortcut: Alt+Shift+N (configurable at chrome://extensions/shortcuts)
+- Insert modes: append (default), prepend, replace
+- Notepad app not modified — extension is bolt-on
