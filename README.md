@@ -14,8 +14,10 @@ A full-featured text editor in a single HTML file. No server, no dependencies, n
 - **Letterhead/branding** — add a logo and company name as stationery
 - **Custom colors** — change editor background and text color
 - **Background image** — use any image as editor wallpaper
+- **Installable PWA** — install from Chrome/Edge address bar; works offline after first visit
+- **Web Share Target** — once installed, appears as a share destination in Android Chrome; shared text/URL lands directly in the editor
 - **Read mode** — toggle between editing and a formatted reading view
-- **Markdown rendering** — open a `.md` or `.markdown` file and Read mode renders it with full markdown (headings, lists, tables, code blocks, blockquotes, images, links, inline styles)
+- **Markdown rendering** — open a `.md` or `.markdown` file and Read mode renders it with full markdown (headings, lists, tables with column alignment, code blocks with language tag, blockquotes, images, links, inline styles, hard line breaks)
 - **YAML frontmatter** — optional `---` metadata block at the top of a `.md` file renders as a header bar (`title`, `status`, `date`, `author`, `tags`)
 - **Inline formatting** — `**bold**`, `*italic*`, `~~strikethrough~~`, `` `code` ``, `> blockquotes`, and auto-linked URLs
 - **Headings** — `#`, `##`, `###` rendered as styled headings
@@ -95,11 +97,13 @@ Click **Edit** to return to the raw text editor.
 
 ## Browser Support
 
-Requires the [File System Access API](https://developer.mozilla.org/en-US/docs/Web/API/File_System_Access_API) — works in **Chrome** and **Edge**. Firefox and Safari can use the notepad but without file open/save (they'll get browser-standard fallback dialogs).
+Requires the [File System Access API](https://developer.mozilla.org/en-US/docs/Web/API/File_System_Access_API) — works in **Chrome** and **Edge**. Firefox and Safari can use the notepad but without native file open/save.
+
+PWA install and Web Share Target require Chrome on Android or Chrome/Edge on desktop.
 
 ## How It Works
 
-It's a single HTML file. No build step, no framework, no backend. The File System Access API lets the browser read and write files with user permission. Settings are stored in `localStorage`.
+The app is `index.html` plus a service worker (`sw.js`), a web manifest (`manifest.json`), and two icon PNGs. No build step, no framework, no backend. The File System Access API lets the browser read and write files with user permission. Settings are stored in `localStorage`. The service worker caches all assets for offline use.
 
 ## License
 

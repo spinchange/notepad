@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-04-12
+
+- Add **PWA support** — installable from Chrome/Edge; `manifest.json` + `sw.js` cache core assets for offline use; icon at 192px and 512px
+- Add **Web Share Target** — installed PWA appears as a share destination on Android Chrome; shared title/text/URL is inserted into the editor and the query params are cleaned from the URL
+- Add **table column alignment** — delimiter row colons (`:---`, `---:`, `:---:`) now apply `text-align` to header and body cells
+- Add **escaped pipe support** in tables — `\|` inside a cell renders as a literal `|`
+- Fix **ragged table rows** — body rows shorter than the header are padded with empty cells
+- Fix **infinite loop in Read mode** on code fences with non-word info strings (e.g. `` ```js,ignore ``), 4+ backtick fences, and any other line that no block handler claims; a safety guard now ensures the parser always advances
+- Fix **CommonMark hard line breaks** — lines ending with two or more spaces emit `<br>` in rendered paragraphs
+- Update **help panel** — three-section layout (Markdown / YAML frontmatter / Plain text journal), CommonMark spec link, Ctrl+F noted for markdown find
+
 ## 2026-04-06
 
 - Add **markdown read mode** — `.md` and `.markdown` files render with full markdown formatting in Read mode (headings, lists, code blocks, tables, blockquotes, inline styles, images, links)
