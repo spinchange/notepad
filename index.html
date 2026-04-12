@@ -1363,7 +1363,10 @@
     try {
       fileHandle = await window.showSaveFilePicker({
         suggestedName: fileHandle ? fileHandle.name : getCurrentFilename(),
-        types: [{ description: 'Text Files', accept: { 'text/plain': ['.txt', '.md', '.markdown'] }}]
+        types: [
+          { description: 'Markdown', accept: { 'text/markdown': ['.md', '.markdown'] } },
+          { description: 'Plain text', accept: { 'text/plain': ['.txt'] } },
+        ]
       });
       await saveFile();
       updateTitle(fileHandle.name);
