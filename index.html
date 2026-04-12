@@ -119,6 +119,7 @@
   #reader .markdown-body h4,
   #reader .markdown-body h5,
   #reader .markdown-body h6 {
+    scroll-margin-top: 12px;
     line-height: 1.25;
     margin: 1.5em 0 0.55em;
     font-weight: 700;
@@ -337,6 +338,29 @@
   body.dark #reader .list-item::before { color: #666; }
   body.dark #reader .markdown-body h1,
   body.dark #reader .markdown-body h2 { border-bottom-color: #444; }
+  #reader .markdown-layout {
+    display: grid;
+    grid-template-columns: minmax(180px, 240px) minmax(0, 1fr);
+    gap: 28px;
+    align-items: start;
+  }
+  #reader .markdown-toc {
+    position: sticky; top: 0; align-self: start;
+    max-height: 80vh; overflow-y: auto;
+    background: #f8f8f8; border: 1px solid #ddd; border-radius: 8px;
+    padding: 14px 16px; font-size: 0.88em; line-height: 1.75;
+  }
+  #reader .markdown-toc strong {
+    display: block; margin-bottom: 6px; font-size: 0.8em;
+    text-transform: uppercase; letter-spacing: 0.05em; color: #999;
+  }
+  #reader .markdown-toc a { color: #2266cc; text-decoration: none; display: block; }
+  #reader .markdown-toc a:hover { color: #114499; }
+  body.dark #reader .markdown-layout { /* inherits */ }
+  body.dark #reader .markdown-toc { background: #252525; border-color: #444; }
+  body.dark #reader .markdown-toc strong { color: #666; }
+  body.dark #reader .markdown-toc a { color: #6cacee; }
+  body.dark #reader .markdown-toc a:hover { color: #9cc8f0; }
   body.dark #reader .markdown-body pre { background: #252525; border-color: #444; }
   body.dark #reader .markdown-body code { background: #333; color: #d4d4d4; }
   body.dark #reader .markdown-body a { color: #6cacee; }
@@ -369,6 +393,10 @@
   #watermark.visible { display: flex; }
   #watermark img { max-width: 40%; max-height: 40%; object-fit: contain; }
 
+  @media (max-width: 640px) {
+    #reader .markdown-layout { grid-template-columns: 1fr; }
+    #reader .markdown-toc { position: static; max-height: none; }
+  }
   @media print {
     #toolbar, #settings-panel, #help-panel { display: none !important; }
     #brand-bar.visible { display: flex !important; }
@@ -377,6 +405,8 @@
     #editor, #reader { overflow: visible; height: auto; flex: none; }
     #reader .search-bar { display: none !important; }
     #reader .active-filter { display: none !important; }
+    #reader .markdown-layout { grid-template-columns: 1fr; }
+    #reader .markdown-toc { display: none; }
     #watermark { display: none !important; }
   }
 </style>
@@ -508,6 +538,7 @@
     <tr><td><code>date: 2026-04-06</code></td><td>Metadata pill</td></tr>
     <tr><td><code>author: chris</code></td><td>Metadata pill</td></tr>
     <tr><td><code>tags:</code> / <code>&nbsp;&nbsp;- work</code></td><td>Tag pills</td></tr>
+    <tr><td><code>toc: true</code></td><td>Table of contents from headings</td></tr>
   </table>
   <h3>Plain text / journal formatting</h3>
   <table>
@@ -946,6 +977,10 @@
     const markdown = parsed.body.replace(/\r\n/g, '\n');
     const lines = markdown.split('\n');
     const blocks = [];
+    const headings = [];
+    const slugCount = {};
+    const slugify = t => t.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').replace(/-$/, '').substring(0, 60);
+    const uniqueSlug = base => { const n = slugCount[base] = (slugCount[base] || 0) + 1; return n === 1 ? base : `${base}-${n - 1}`; };
     let i = 0;
 
     renderMarkdownMetadata(parsed.frontmatter);
@@ -983,7 +1018,10 @@
       const headingMatch = line.match(/^(#{1,6})\s+(.+)$/);
       if (headingMatch) {
         const level = headingMatch[1].length;
-        blocks.push(`<h${level}>${formatMarkdownInline(headingMatch[2].trim())}</h${level}>`);
+        const text = headingMatch[2].trim();
+        const id = uniqueSlug(slugify(text) || `h${level}`);
+        headings.push({ level, text, id });
+        blocks.push(`<h${level} id="${id}">${formatMarkdownInline(text)}</h${level}>`);
         i++;
         continue;
       }
@@ -1076,7 +1114,17 @@
       blocks.push(`<p>${parts.join(' ')}</p>`);
     }
 
-    readerContent.innerHTML = `<div class="markdown-body">${blocks.join('')}</div>`;
+    const bodyHtml = `<div class="markdown-body">${blocks.join('')}</div>`;
+    if (parsed.frontmatter.toc && parsed.frontmatter.toc !== 'false' && headings.length > 0) {
+      const minLevel = Math.min(...headings.map(h => h.level));
+      const items = headings.map(h =>
+        `<a href="#${h.id}" style="padding-left:${(h.level - minLevel) * 14}px">${escapeHtml(h.text)}</a>`
+      ).join('');
+      const tocHtml = `<nav class="markdown-toc"><strong>Contents</strong>${items}</nav>`;
+      readerContent.innerHTML = `<div class="markdown-layout">${tocHtml}${bodyHtml}</div>`;
+    } else {
+      readerContent.innerHTML = bodyHtml;
+    }
   }
 
   function renderLegacyReadMode() {
