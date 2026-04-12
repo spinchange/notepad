@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "Notepad Capture",
+  "version": "1.0",
+  "description": "Capture page content or selection and send it to Notepad",
+  "permissions": ["activeTab", "scripting", "storage"],
+  "host_permissions": ["*://*/*"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Send to Notepad"
+  },
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Alt+Shift+N",
+        "mac": "Command+Shift+N"
+      },
+      "description": "Open Notepad Capture"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://spinchange.github.io/notepad/*",
+        "http://localhost/*",
+        "http://127.0.0.1/*"
+      ],
+      "js": ["content_notepad.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
