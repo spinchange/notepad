@@ -958,12 +958,13 @@
         continue;
       }
 
-      const fenceMatch = line.match(/^```([^`]*)$/);
+      const fenceMatch = line.match(/^(`{3,})([^`]*)$/);
       if (fenceMatch) {
-        const lang = fenceMatch[1].trim().split(/\s+/)[0] || '';
+        const lang = fenceMatch[2].trim().split(/\s+/)[0] || '';
+        const fence = fenceMatch[1]; // e.g. "```" or "````"
         const codeLines = [];
         i++;
-        while (i < lines.length && !/^```/.test(lines[i])) {
+        while (i < lines.length && !lines[i].startsWith(fence)) {
           codeLines.push(lines[i]);
           i++;
         }
@@ -1054,11 +1055,14 @@
       while (i < lines.length) {
         const current = lines[i];
         if (current.trim() === '') break;
-        if (/^```/.test(current) || /^(-{3,}|\*{3,}|_{3,})\s*$/.test(current) || /^(#{1,6})\s+/.test(current) || current.startsWith('> ') || /^(\s*)([-*+]|\d+\.)\s+/.test(current)) break;
+        if (/^`{3,}/.test(current) || /^(-{3,}|\*{3,}|_{3,})\s*$/.test(current) || /^(#{1,6})\s+/.test(current) || current.startsWith('> ') || /^(\s*)([-*+]|\d+\.)\s+/.test(current)) break;
         if (current.includes('|') && i + 1 < lines.length && /^[\s|:-]+$/.test(lines[i + 1])) break;
         paragraphLines.push(current); // preserve trailing spaces for hard-break detection
         i++;
       }
+      // Safety: if no block handler matched and no paragraph lines were consumed,
+      // advance past this line unconditionally to prevent an infinite loop.
+      if (paragraphLines.length === 0) { i++; continue; }
       const parts = [];
       for (let j = 0; j < paragraphLines.length; j++) {
         const line = paragraphLines[j];
