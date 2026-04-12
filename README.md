@@ -18,7 +18,7 @@ Runs in any browser from a URL — or install it as a PWA on Chromium-based brow
 - **Installable PWA** — install from Chrome/Edge address bar; works offline after first visit
 - **Web Share Target** — once installed, appears as a share destination in Android Chrome; shared text/URL lands directly in the editor
 - **Read mode** — toggle between editing and a formatted reading view
-- **Markdown rendering** — open a `.md` or `.markdown` file and Read mode renders it with full markdown (headings, lists, tables with column alignment, code blocks with language tag, blockquotes, images, links, inline styles, hard line breaks)
+- **Markdown rendering** — open a `.md` or `.markdown` file and Read mode renders it to the [CommonMark spec](https://spec.commonmark.org/) (headings, lists, tables with column alignment, fenced code blocks, blockquotes, images, links, inline styles, hard line breaks); hand-rolled renderer, no library
 - **YAML frontmatter** — optional `---` metadata block at the top of a `.md` file renders as a header bar (`title`, `project`, `status`, `priority`, `due`, `date`, `author`, `tags`)
 - **Table of contents** — add `toc: true` to frontmatter for a sticky sidebar TOC with anchor links, indented by heading level
 - **Inline formatting** — `**bold**`, `*italic*`, `~~strikethrough~~`, `` `code` ``, `> blockquotes`, and auto-linked URLs
