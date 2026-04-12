@@ -1001,12 +1001,6 @@
 
   function renderMarkdownReadMode() {
     const parsed = parseMarkdownFrontmatter(editor.value);
-    // DEBUG: show first line char codes and frontmatter keys
-    const _raw = editor.value.charCodeAt(0) === 0xFEFF ? editor.value.slice(1) : editor.value;
-    const _firstLine = _raw.replace(/\r\n|\r/g, '\n').split('\n')[0];
-    const _charCodes = Array.from(_firstLine).map(c => c.charCodeAt(0)).join(',');
-    const _fmKeys = Object.keys(parsed.frontmatter).join(', ') || '(none)';
-    readerContent.innerHTML = `<pre style="background:#ff06;padding:8px;font-size:11px;word-break:break-all">DEBUG line1: "${escapeHtml(_firstLine)}" codes:[${_charCodes}] fm:${_fmKeys}</pre>`;
     const markdown = parsed.body.replace(/\r\n/g, '\n');
     const lines = markdown.split('\n');
     const blocks = [];
@@ -1158,6 +1152,15 @@
     } else {
       readerContent.innerHTML = bodyHtml;
     }
+    // DEBUG
+    const _raw = editor.value.charCodeAt(0) === 0xFEFF ? editor.value.slice(1) : editor.value;
+    const _line0 = _raw.replace(/\r\n|\r/g, '\n').split('\n')[0];
+    const _codes = Array.from(_line0).map(c => c.charCodeAt(0)).join(',');
+    const _keys = Object.keys(parsed.frontmatter).join(',') || 'none';
+    const _dbg = document.createElement('pre');
+    _dbg.style.cssText = 'background:#ff06;padding:8px;font-size:11px;word-break:break-all;margin:0 0 12px';
+    _dbg.textContent = `line1:"${_line0}" codes:[${_codes}] fm:${_keys}`;
+    readerContent.prepend(_dbg);
   }
 
   function renderLegacyReadMode() {
