@@ -851,16 +851,15 @@
   }
 
   function parseMarkdownFrontmatter(text) {
-    if (!text.startsWith('---\n') && !text.startsWith('---\r\n')) {
-      return { frontmatter: {}, body: text };
+    // Strip UTF-8 BOM if present
+    const stripped = text.charCodeAt(0) === 0xFEFF ? text.slice(1) : text;
+    const normalized = stripped.replace(/\r\n/g, '\n');
+    const match = normalized.match(/^---[ \t]*\n([\s\S]*?)\n---[ \t]*(?:\n|$)/);
+    if (!match) {
+      return { frontmatter: {}, body: stripped };
     }
-    const normalized = text.replace(/\r\n/g, '\n');
-    const end = normalized.indexOf('\n---\n', 4);
-    if (end === -1) {
-      return { frontmatter: {}, body: text };
-    }
-    const rawFrontmatter = normalized.slice(4, end);
-    const body = normalized.slice(end + 5);
+    const rawFrontmatter = match[1];
+    const body = normalized.slice(match[0].length);
     const frontmatter = {};
     let currentKey = null;
 
