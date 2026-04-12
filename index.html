@@ -580,6 +580,7 @@
     <div id="reader-content"></div>
   </div>
 </div>
+<input type="file" id="openInput" accept=".txt,.md,.markdown,.log,.csv,.json,.xml,.html,.css,.js,.ps1,.py" style="display:none">
 <input type="file" id="logoInput" accept="image/*" style="display:none">
 <input type="file" id="bgInput" accept="image/*" style="display:none">
 <input type="file" id="watermarkInput" accept="image/*" style="display:none">
@@ -1329,21 +1330,37 @@
 
   async function openFile() {
     if (editor.value !== savedContent && !confirm('Discard unsaved changes?')) return;
-    try {
-      [fileHandle] = await window.showOpenFilePicker({
-        types: [{ description: 'Text Files', accept: { 'text/plain': ['.txt', '.md', '.log', '.csv', '.json', '.xml', '.html', '.css', '.js', '.ps1', '.py'] }}],
-        multiple: false
-      });
-      const file = await fileHandle.getFile();
-      editor.value = await file.text();
-      savedContent = editor.value;
-      updateTitle(fileHandle.name);
-      markDirty();
-      if (inReadMode) renderReadMode();
-    } catch (e) {
-      if (e.name !== 'AbortError') console.error(e);
+    if (window.showOpenFilePicker) {
+      try {
+        [fileHandle] = await window.showOpenFilePicker({
+          types: [{ description: 'Text Files', accept: { 'text/plain': ['.txt', '.md', '.log', '.csv', '.json', '.xml', '.html', '.css', '.js', '.ps1', '.py'] }}],
+          multiple: false
+        });
+        const file = await fileHandle.getFile();
+        editor.value = await file.text();
+        savedContent = editor.value;
+        updateTitle(fileHandle.name);
+        markDirty();
+        if (inReadMode) renderReadMode();
+      } catch (e) {
+        if (e.name !== 'AbortError') console.error(e);
+      }
+    } else {
+      document.getElementById('openInput').click();
     }
   }
+
+  document.getElementById('openInput').addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    fileHandle = null;
+    editor.value = await file.text();
+    savedContent = editor.value;
+    updateTitle(file.name);
+    markDirty();
+    if (inReadMode) renderReadMode();
+    e.target.value = '';
+  });
 
   async function saveFile() {
     if (!fileHandle) return saveFileAs();
@@ -1360,18 +1377,31 @@
   }
 
   async function saveFileAs() {
-    try {
-      fileHandle = await window.showSaveFilePicker({
-        suggestedName: fileHandle ? fileHandle.name : getCurrentFilename(),
-        types: [
-          { description: 'Markdown', accept: { 'text/markdown': ['.md', '.markdown'] } },
-          { description: 'Plain text', accept: { 'text/plain': ['.txt'] } },
-        ]
-      });
-      await saveFile();
-      updateTitle(fileHandle.name);
-    } catch (e) {
-      if (e.name !== 'AbortError') console.error(e);
+    if (window.showSaveFilePicker) {
+      try {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: fileHandle ? fileHandle.name : getCurrentFilename(),
+          types: [
+            { description: 'Markdown', accept: { 'text/markdown': ['.md', '.markdown'] } },
+            { description: 'Plain text', accept: { 'text/plain': ['.txt'] } },
+          ]
+        });
+        await saveFile();
+        updateTitle(fileHandle.name);
+      } catch (e) {
+        if (e.name !== 'AbortError') console.error(e);
+      }
+    } else {
+      const name = fileHandle ? fileHandle.name : getCurrentFilename();
+      const blob = new Blob([editor.value], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = name;
+      a.click();
+      URL.revokeObjectURL(url);
+      savedContent = editor.value;
+      markDirty();
     }
   }
 
