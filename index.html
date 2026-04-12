@@ -851,15 +851,24 @@
   }
 
   function parseMarkdownFrontmatter(text) {
-    // Strip UTF-8 BOM if present
-    const stripped = text.charCodeAt(0) === 0xFEFF ? text.slice(1) : text;
-    const normalized = stripped.replace(/\r\n/g, '\n');
-    const match = normalized.match(/^---[ \t]*\n([\s\S]*?)\n---[ \t]*(?:\n|$)/);
-    if (!match) {
-      return { frontmatter: {}, body: stripped };
+    // Strip UTF-8 BOM and normalize all line endings (\r\n, \r, \n)
+    const raw = text.charCodeAt(0) === 0xFEFF ? text.slice(1) : text;
+    const normalized = raw.replace(/\r\n|\r/g, '\n');
+    const lines = normalized.split('\n');
+    // First line must be exactly ---
+    if (lines[0].trimEnd() !== '---') {
+      return { frontmatter: {}, body: raw };
     }
-    const rawFrontmatter = match[1];
-    const body = normalized.slice(match[0].length);
+    // Find closing ---
+    let closingLine = -1;
+    for (let i = 1; i < lines.length; i++) {
+      if (lines[i].trimEnd() === '---') { closingLine = i; break; }
+    }
+    if (closingLine === -1) {
+      return { frontmatter: {}, body: raw };
+    }
+    const rawFrontmatter = lines.slice(1, closingLine).join('\n');
+    const body = lines.slice(closingLine + 1).join('\n');
     const frontmatter = {};
     let currentKey = null;
 
