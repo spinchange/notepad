@@ -2,8 +2,7 @@
 
 <img src="notebook.svg" width="80" align="right">
 
-A full-featured text editor in a single HTML file. No server, no dependencies, no install.  
-Now an Installable Progressive Web Application (Chromium-based browsers)
+A full-featured text editor with no server, no dependencies, and no build step. Runs in any browser from a URL — or install it as a PWA on Chromium-based browsers.
 
 **Live:** [https://spinchange.github.io/notepad/](https://spinchange.github.io/notepad/)
 
