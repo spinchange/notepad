@@ -1022,10 +1022,20 @@
         if (current.trim() === '') break;
         if (/^```/.test(current) || /^(-{3,}|\*{3,}|_{3,})\s*$/.test(current) || /^(#{1,6})\s+/.test(current) || current.startsWith('> ') || /^(\s*)([-*+]|\d+\.)\s+/.test(current)) break;
         if (current.includes('|') && i + 1 < lines.length && /^[\s|:-]+$/.test(lines[i + 1])) break;
-        paragraphLines.push(current.trim());
+        paragraphLines.push(current); // preserve trailing spaces for hard-break detection
         i++;
       }
-      blocks.push(`<p>${formatMarkdownInline(paragraphLines.join(' '))}</p>`);
+      const parts = [];
+      for (let j = 0; j < paragraphLines.length; j++) {
+        const line = paragraphLines[j];
+        const isLast = j === paragraphLines.length - 1;
+        if (!isLast && /  $/.test(line)) {
+          parts.push(formatMarkdownInline(line.trimEnd()) + '<br>');
+        } else {
+          parts.push(formatMarkdownInline(line.trim()));
+        }
+      }
+      blocks.push(`<p>${parts.join(' ')}</p>`);
     }
 
     readerContent.innerHTML = `<div class="markdown-body">${blocks.join('')}</div>`;
