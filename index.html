@@ -479,31 +479,47 @@
     <tr><td><code>Ctrl+N</code></td><td>New</td></tr>
     <tr><td><code>Ctrl+R</code></td><td>Toggle read mode</td></tr>
     <tr><td><code>Tab</code></td><td>Insert tab</td></tr>
-    <tr><td><code>Email</code></td><td>Open Gmail compose with content</td></tr>
+    <tr><td><code>Ctrl+F</code></td><td>Browser find (use in Read mode)</td></tr>
   </table>
-  <h3>Formatting (visible in Read mode)</h3>
+  <h3>Markdown formatting — .md / .markdown files</h3>
   <table>
-    <tr><td><code># Heading</code></td><td>Heading levels: <code>#</code>, <code>##</code>, <code>###</code></td></tr>
-    <tr><td><code>**bold**</code></td><td><strong>bold</strong></td></tr>
-    <tr><td><code>*italic*</code></td><td><em>italic</em></td></tr>
+    <tr><td><code># H1</code> &ndash; <code>###### H6</code></td><td>Six heading levels</td></tr>
+    <tr><td><code>**bold**</code> or <code>__bold__</code></td><td><strong>bold</strong></td></tr>
+    <tr><td><code>*italic*</code> or <code>_italic_</code></td><td><em>italic</em></td></tr>
     <tr><td><code>~~strike~~</code></td><td><s>strikethrough</s></td></tr>
     <tr><td><code>`code`</code></td><td>Inline code</td></tr>
+    <tr><td><code>[text](url)</code></td><td>Link</td></tr>
+    <tr><td><code>![alt](url)</code></td><td>Image</td></tr>
     <tr><td><code>> quote</code></td><td>Blockquote</td></tr>
-    <tr><td><code>- item</code></td><td>Bullet list item</td></tr>
+    <tr><td><code>- item</code> or <code>* item</code></td><td>Unordered list</td></tr>
+    <tr><td><code>1. item</code></td><td>Ordered list</td></tr>
+    <tr><td><code>```lang</code> &hellip; <code>```</code></td><td>Fenced code block</td></tr>
+    <tr><td><code>| A | B |</code></td><td>Table (with <code>|---|---|</code> separator row)</td></tr>
     <tr><td><code>---</code></td><td>Horizontal rule</td></tr>
-    <tr><td><code>#tag</code></td><td>Inline tag text</td></tr>
+    <tr><td>line ending with two spaces</td><td>Hard line break within a paragraph</td></tr>
+    <tr><td>blank line</td><td>Paragraph break</td></tr>
+  </table>
+  <h3>YAML frontmatter — .md files</h3>
+  <table>
+    <tr><td><code>---</code> block at top of file</td><td>Parsed as metadata, not rendered as body</td></tr>
+    <tr><td><code>title: My Note</code></td><td>Read mode header title</td></tr>
+    <tr><td><code>status: draft</code></td><td>Metadata pill</td></tr>
+    <tr><td><code>date: 2026-04-06</code></td><td>Metadata pill</td></tr>
+    <tr><td><code>author: chris</code></td><td>Metadata pill</td></tr>
+    <tr><td><code>tags:</code> / <code>&nbsp;&nbsp;- work</code></td><td>Tag pills</td></tr>
+  </table>
+  <h3>Plain text / journal formatting</h3>
+  <table>
+    <tr><td><code>=== Date ===</code></td><td>Styled date header</td></tr>
+    <tr><td><code>[12:30:45 @HOST] text</code></td><td>Timestamped entry card</td></tr>
+    <tr><td><code>#tag</code></td><td>Inline tag pill</td></tr>
     <tr><td><code>https://...</code></td><td>Auto-linked URL</td></tr>
   </table>
-  <h3>Frontmatter Metadata</h3>
-  <table>
-    <tr><td><code>---</code></td><td>Optional YAML frontmatter at the top of a markdown file</td></tr>
-    <tr><td><code>title: My Note</code></td><td>Shown as the Read mode header title</td></tr>
-    <tr><td><code>status: draft</code></td><td>Shown as metadata in the header bar</td></tr>
-    <tr><td><code>date: 2026-04-06</code></td><td>Shown as metadata in the header bar</td></tr>
-    <tr><td><code>author: chris</code></td><td>Shown as metadata in the header bar</td></tr>
-    <tr><td><code>tags:\n  - work</code></td><td>List-style tags rendered as metadata pills</td></tr>
-  </table>
-  <p style="margin-top:10px"><a href="https://github.com/spinchange/notepad" target="_blank" rel="noopener">README &amp; source on GitHub</a></p>
+  <p style="margin-top:10px">
+    <a href="https://github.com/spinchange/notepad" target="_blank" rel="noopener">README &amp; source on GitHub</a>
+    &nbsp;&middot;&nbsp;
+    <a href="https://spec.commonmark.org/" target="_blank" rel="noopener">CommonMark spec</a>
+  </p>
 </div>
 <div id="brand-bar">
   <div id="brand-placeholder" onclick="pickLogo()">Add<br>logo</div>
