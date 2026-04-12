@@ -1020,13 +1020,30 @@
           i++;
         }
         if (tableLines.length >= 2 && /^[\s|:-]+$/.test(tableLines[1])) {
-          const splitRow = (row) => row.split('|').map(cell => cell.trim()).filter((cell, index, arr) => {
-            return !(index === 0 && cell === '') && !(index === arr.length - 1 && cell === '');
+          const splitRow = (row) => {
+            // Replace escaped pipes with placeholder before splitting, restore after
+            return row.replace(/\\\|/g, '\x00').split('|')
+              .map(cell => cell.trim().replace(/\x00/g, '|'))
+              .filter((cell, index, arr) =>
+                !(index === 0 && cell === '') && !(index === arr.length - 1 && cell === ''));
+          };
+          // Parse alignment from delimiter row (e.g. :--- left, ---: right, :---: center)
+          const alignments = splitRow(tableLines[1]).map(cell => {
+            if (cell.startsWith(':') && cell.endsWith(':')) return 'center';
+            if (cell.endsWith(':')) return 'right';
+            if (cell.startsWith(':')) return 'left';
+            return '';
           });
+          const colStyle = (i) => alignments[i] ? ` style="text-align:${alignments[i]}"` : '';
           const headers = splitRow(tableLines[0]);
-          const bodyRows = tableLines.slice(2).map(splitRow);
-          const thead = `<thead><tr>${headers.map(cell => `<th>${formatMarkdownInline(cell)}</th>`).join('')}</tr></thead>`;
-          const tbody = `<tbody>${bodyRows.map(row => `<tr>${row.map(cell => `<td>${formatMarkdownInline(cell)}</td>`).join('')}</tr>`).join('')}</tbody>`;
+          const bodyRows = tableLines.slice(2).map(row => {
+            const cells = splitRow(row);
+            // Pad short rows to match header column count
+            while (cells.length < headers.length) cells.push('');
+            return cells;
+          });
+          const thead = `<thead><tr>${headers.map((cell, i) => `<th${colStyle(i)}>${formatMarkdownInline(cell)}</th>`).join('')}</tr></thead>`;
+          const tbody = `<tbody>${bodyRows.map(row => `<tr>${row.map((cell, i) => `<td${colStyle(i)}>${formatMarkdownInline(cell)}</td>`).join('')}</tr>`).join('')}</tbody>`;
           blocks.push(`<table>${thead}${tbody}</table>`);
           continue;
         }
