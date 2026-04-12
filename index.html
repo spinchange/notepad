@@ -859,10 +859,10 @@
     if (lines[0].trimEnd() !== '---') {
       return { frontmatter: {}, body: raw };
     }
-    // Find closing ---
+    // Find closing --- (also accept ___ or ... which mobile autocorrect may substitute)
     let closingLine = -1;
     for (let i = 1; i < lines.length; i++) {
-      if (lines[i].trimEnd() === '---') { closingLine = i; break; }
+      if (/^(---|___|\.\.\.)\s*$/.test(lines[i])) { closingLine = i; break; }
     }
     if (closingLine === -1) {
       return { frontmatter: {}, body: raw };
@@ -1152,18 +1152,6 @@
     } else {
       readerContent.innerHTML = bodyHtml;
     }
-    // DEBUG
-    const _raw = editor.value.charCodeAt(0) === 0xFEFF ? editor.value.slice(1) : editor.value;
-    const _lines = _raw.replace(/\r\n|\r/g, '\n').split('\n');
-    const _keys = Object.keys(parsed.frontmatter).join(',') || 'none';
-    const _dbg = document.createElement('pre');
-    _dbg.style.cssText = 'background:#ff06;padding:8px;font-size:11px;word-break:break-all;margin:0 0 12px';
-    const _lineInfo = _lines.slice(0, 5).map((l, i) => {
-      const codes = Array.from(l).map(c => c.charCodeAt(0)).join(',');
-      return `L${i+1}:"${l}"[${codes||'empty'}]`;
-    }).join('\n');
-    _dbg.textContent = `fm:${_keys}\n${_lineInfo}`;
-    readerContent.prepend(_dbg);
   }
 
   function renderLegacyReadMode() {
