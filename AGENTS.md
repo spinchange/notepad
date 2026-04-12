@@ -40,15 +40,30 @@ This file records repo-specific agent guidance and durable notes discovered whil
 
 **Renderer notes — known acceptable limitations:**
 - Nested lists render flat (no nesting support)
-- Table column alignment (`:---:`) is stripped, not applied
 - `\*` escape sequences not supported (not a CommonMark escape)
 - Renderer is hand-rolled, not a full CommonMark implementation — edge cases possible
 
 **Discussed but not built:**
-- PWA: viable, requires `manifest.json` + `sw.js` + two icons. Inline single-file approach won't work for service worker (Blob URL scope restriction). Two extra files minimum.
 - Chrome Extension companion: clean architecture for tab capture → chrome.storage → content script on Notepad page → textarea insert. ~50-100 lines. Notepad stays passive.
-- Web Share Target: bonus from PWA install, enables other web pages to share text to Notepad.
 - stdout/pipe to browser: not achievable via any browser API; clipboard bridge is the practical workaround.
 - CommonMark chosen as canonical spec over GFM (GFM is a superset; following CommonMark ensures compatibility with GFM and most renderers, not vice versa).
 
-**Next session:** PWA + companion extension. Start fresh — different files, different APIs.
+## 2026-04-12 Session (continued)
+
+**Added PWA:** `manifest.json`, `sw.js` (cache-first, offline capable), `icon-192.png`, `icon-512.png`. Two lines added to `index.html`: manifest link + SW registration. Web Share Target included in manifest — other apps can share text/URL into the editor via query params (`?text=&title=&url=`), handled and cleaned up on load.
+
+**SW cache versioning rule:** bump `CACHE = 'notepad-vN'` in `sw.js` any time `index.html` changes. Currently at v4. The activate handler deletes old caches automatically.
+
+**Table renderer improvements:**
+- Column alignment now parsed from delimiter row (`:---` left, `---:` right, `:---:` center) and applied as inline `style` on `<th>`/`<td>`
+- Escaped pipes (`\|`) handled via placeholder swap before splitting
+- Ragged rows padded to header column count
+
+**Code fence infinite loop fixes (renderMarkdownReadMode):**
+- Root cause: `fenceMatch` regex only accepted `\w+` info strings; fences like `` ```js,ignore `` or `` ```` `` (4 backticks) caused `fenceMatch` to fail, paragraph loop to break immediately on `/^`{3,}/`, and `i` to never advance.
+- Fix 1: `fenceMatch` now uses `` /^(`{3,})([^`]*)$/ `` — handles 3+ backtick fences and any info string without backticks.
+- Fix 2: closing fence matched with `startsWith(fence)` to respect opening depth.
+- Fix 3: paragraph loop break updated to `/^`{3,}/`.
+- Fix 4: safety guard added — if `paragraphLines` is empty after the loop, `i++` unconditionally. Prevents any future unknown trigger from causing a freeze.
+
+**Next:** Chrome Extension companion for tab capture.
