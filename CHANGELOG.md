@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-04-06
+
+- Add **markdown read mode** — `.md` and `.markdown` files render with full markdown formatting in Read mode (headings, lists, code blocks, tables, blockquotes, inline styles, images, links)
+- Add **YAML frontmatter support** — optional `---` block at the top of a markdown file is parsed and displayed as a metadata header bar (`title`, `status`, `date`, `author`, `tags`)
+- Search bar hidden in markdown read mode (use browser Ctrl+F for find)
+
+## 2026-04-05
+
+- Add **editor watermark** — set a faded background logo behind the editor text via Settings → Watermark; adjustable opacity
+- Add **notebook SVG icon** — favicon and repo icon
+- Fix **print layout** cutting off content after the first page
+
 ## 2026-02-17
 
 - Add **Word export** — toolbar "Word" button downloads a `.doc` file with markdown formatting converted and optional letterhead included

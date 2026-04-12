@@ -15,6 +15,8 @@ A full-featured text editor in a single HTML file. No server, no dependencies, n
 - **Custom colors** — change editor background and text color
 - **Background image** — use any image as editor wallpaper
 - **Read mode** — toggle between editing and a formatted reading view
+- **Markdown rendering** — open a `.md` or `.markdown` file and Read mode renders it with full markdown (headings, lists, tables, code blocks, blockquotes, images, links, inline styles)
+- **YAML frontmatter** — optional `---` metadata block at the top of a `.md` file renders as a header bar (`title`, `status`, `date`, `author`, `tags`)
 - **Inline formatting** — `**bold**`, `*italic*`, `~~strikethrough~~`, `` `code` ``, `> blockquotes`, and auto-linked URLs
 - **Headings** — `#`, `##`, `###` rendered as styled headings
 - **Lists** — `- item` or `* item` rendered as bullet lists
@@ -27,6 +29,7 @@ A full-featured text editor in a single HTML file. No server, no dependencies, n
 - **Font family picker** — choose from system fonts (Segoe UI, Arial, Verdana, Georgia, Times New Roman, Consolas); no external dependencies
 - **Font size control** — adjustable slider in settings (10px–32px)
 - **Line spacing control** — adjustable slider in settings (1.2–2.4)
+- **Editor watermark** — faded background logo behind the editor text, with adjustable opacity
 - **Copy button** — copy editor text to clipboard with one click
 - **Email button** — open Gmail compose with content pre-filled as a draft
 - **Help button** — in-app formatting reference, shortcuts, and link to README
@@ -61,6 +64,7 @@ Click the **Settings** button to:
 - Adjust line spacing
 - Pick editor background and text colors
 - Set a background image
+- Set a watermark (faded logo behind the editor text) and adjust its opacity
 - Reset everything to defaults
 
 ### Branding / Letterhead
@@ -72,20 +76,22 @@ Click the **Settings** button to:
 
 ### Read Mode
 
-Click the **Read** button (or Ctrl+R) to switch from editing to a formatted view:
+Click the **Read** button (or Ctrl+R) to switch from editing to a formatted view.
 
+**Markdown files** (`.md`, `.markdown`): full markdown rendering with headings, lists, ordered lists, tables, fenced code blocks, blockquotes, images, links, inline styles, and horizontal rules. An optional YAML frontmatter block at the top of the file is parsed and shown as a metadata header bar rather than rendered as body text. Use browser Ctrl+F to search within the rendered content.
+
+**Plain text / journal files**: the notepad renderer applies a lightweight format:
 - `=== Sunday, February 15, 2026 ===` becomes a styled date header
 - `[12:30:45 @LUNA] journal entry #tag` renders as a card with timestamp, machine badge, and tag pills
-- `#hashtags` become clickable filters — click one to show only matching entries
+- `#hashtags` become inline tag pills
 - URLs become clickable links
 - `**bold**`, `*italic*`, `~~strikethrough~~`, `` `code` ``, and `> blockquotes` are rendered inline
 - `# Heading`, `## Heading`, `### Heading` — three levels of headings
 - `- item` or `* item` — bullet lists
 - `---` — horizontal rule
 - A search bar at the top filters entries in real-time
-- Click **Edit** to return to the raw text editor
 
-Works great with plain text journals, logs, or any structured text — but also handles plain unformatted text just fine.
+Click **Edit** to return to the raw text editor.
 
 ## Browser Support
 

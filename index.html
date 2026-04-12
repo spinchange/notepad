@@ -107,6 +107,86 @@
   #reader .list-item { padding: 2px 0 2px 20px; position: relative; }
   #reader .list-item::before { content: '\2022'; position: absolute; left: 6px; color: #888; }
   #reader hr { border: none; border-top: 1px solid #ddd; margin: 12px 0; }
+  #reader .markdown-body {
+    max-width: 56rem;
+  }
+  #reader .markdown-body > *:first-child { margin-top: 0; }
+  #reader .markdown-body > *:last-child { margin-bottom: 0; }
+  #reader .markdown-body h1,
+  #reader .markdown-body h2,
+  #reader .markdown-body h3,
+  #reader .markdown-body h4,
+  #reader .markdown-body h5,
+  #reader .markdown-body h6 {
+    line-height: 1.25;
+    margin: 1.5em 0 0.55em;
+    font-weight: 700;
+  }
+  #reader .markdown-body h1,
+  #reader .markdown-body h2 {
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 0.25em;
+  }
+  #reader .markdown-body h1 { font-size: 2em; }
+  #reader .markdown-body h2 { font-size: 1.55em; }
+  #reader .markdown-body h3 { font-size: 1.25em; }
+  #reader .markdown-body h4 { font-size: 1.1em; }
+  #reader .markdown-body p,
+  #reader .markdown-body ul,
+  #reader .markdown-body ol,
+  #reader .markdown-body pre,
+  #reader .markdown-body blockquote,
+  #reader .markdown-body table {
+    margin: 0 0 1em;
+  }
+  #reader .markdown-body ul,
+  #reader .markdown-body ol {
+    padding-left: 1.5em;
+  }
+  #reader .markdown-body li + li {
+    margin-top: 0.2em;
+  }
+  #reader .markdown-body pre {
+    background: #f4f4f4;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 12px 14px;
+    overflow: auto;
+  }
+  #reader .markdown-body pre code {
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+  }
+  #reader .markdown-body code {
+    font-family: Consolas, 'Courier New', monospace;
+    font-size: 0.92em;
+    background: #f0f0f0;
+    padding: 1px 5px;
+    border-radius: 4px;
+  }
+  #reader .markdown-body a {
+    color: #2266cc;
+  }
+  #reader .markdown-body img {
+    max-width: 100%;
+    height: auto;
+  }
+  #reader .markdown-body table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  #reader .markdown-body th,
+  #reader .markdown-body td {
+    border: 1px solid #ddd;
+    padding: 8px 10px;
+    text-align: left;
+    vertical-align: top;
+  }
+  #reader .markdown-body th {
+    background: #f6f6f6;
+    font-weight: 600;
+  }
 
   /* Help panel */
   #help-panel {
@@ -146,6 +226,50 @@
     color: #666;
   }
   #reader .active-filter .remove-filter:hover { color: #c00; }
+  #reader-meta {
+    display: none;
+    margin: 0 0 20px;
+    padding: 14px 16px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #fafafa;
+  }
+  #reader-meta.visible {
+    display: block;
+  }
+  #reader-meta .meta-title {
+    font-size: 1.45em;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+  #reader-meta .meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+  #reader-meta .meta-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #f0f0f0;
+    border: 1px solid #ddd;
+    font-size: 12px;
+    color: #555;
+  }
+  #reader-meta .meta-pill.labelled strong {
+    color: #333;
+    font-weight: 600;
+  }
+  #reader-meta .meta-pill.tag {
+    cursor: default;
+    background: #e3f0ff;
+    color: #336;
+    border-color: #c9ddfb;
+  }
 
   .color-input-wrap { position: relative; display: inline-block; }
   .color-input-wrap input[type="color"] {
@@ -210,12 +334,24 @@
   body.dark #reader blockquote { border-left-color: #555; color: #999; }
   body.dark #reader hr { border-top-color: #444; }
   body.dark #reader .list-item::before { color: #666; }
+  body.dark #reader .markdown-body h1,
+  body.dark #reader .markdown-body h2 { border-bottom-color: #444; }
+  body.dark #reader .markdown-body pre { background: #252525; border-color: #444; }
+  body.dark #reader .markdown-body code { background: #333; color: #d4d4d4; }
+  body.dark #reader .markdown-body a { color: #6cacee; }
+  body.dark #reader .markdown-body th,
+  body.dark #reader .markdown-body td { border-color: #444; }
+  body.dark #reader .markdown-body th { background: #2a2a2a; }
   body.dark #help-panel { background: #2d2d2d; border-color: #444; color: #ddd; }
   body.dark #help-panel code { background: #3c3c3c; color: #ddd; }
   body.dark #help-panel a { color: #6cacee; }
   body.dark #reader .search-bar input { background: #2d2d2d; border-color: #555; color: #ddd; }
   body.dark #reader .search-bar .clear-btn { background: #3c3c3c; border-color: #555; color: #ddd; }
   body.dark #reader .active-filter { background: #2a3a4a; color: #8cb4e0; }
+  body.dark #reader-meta { background: #252525; border-color: #444; }
+  body.dark #reader-meta .meta-pill { background: #333; border-color: #444; color: #bbb; }
+  body.dark #reader-meta .meta-pill.labelled strong { color: #eee; }
+  body.dark #reader-meta .meta-pill.tag { background: #2a3a4a; color: #8cb4e0; border-color: #3d566c; }
   body.dark #settings-panel { background: #2d2d2d; border-color: #444; color: #ddd; }
   body.dark #settings-panel .setting-label { color: #ddd; }
   body.dark #settings-panel label { color: #ddd; }
@@ -347,7 +483,7 @@
   </table>
   <h3>Formatting (visible in Read mode)</h3>
   <table>
-    <tr><td><code>## Heading</code></td><td>Heading (# h1, ## h2, ### h3)</td></tr>
+    <tr><td><code># Heading</code></td><td>Heading levels: <code>#</code>, <code>##</code>, <code>###</code></td></tr>
     <tr><td><code>**bold**</code></td><td><strong>bold</strong></td></tr>
     <tr><td><code>*italic*</code></td><td><em>italic</em></td></tr>
     <tr><td><code>~~strike~~</code></td><td><s>strikethrough</s></td></tr>
@@ -355,14 +491,17 @@
     <tr><td><code>> quote</code></td><td>Blockquote</td></tr>
     <tr><td><code>- item</code></td><td>Bullet list item</td></tr>
     <tr><td><code>---</code></td><td>Horizontal rule</td></tr>
-    <tr><td><code>#tag</code></td><td>Clickable tag (filters in read mode)</td></tr>
+    <tr><td><code>#tag</code></td><td>Inline tag text</td></tr>
     <tr><td><code>https://...</code></td><td>Auto-linked URL</td></tr>
   </table>
-  <h3>Journal Format</h3>
+  <h3>Frontmatter Metadata</h3>
   <table>
-    <tr><td><code>=== Date ===</code></td><td>Date/section header</td></tr>
-    <tr><td><code>[12:30:45] text</code></td><td>Timestamped entry</td></tr>
-    <tr><td><code>[12:30:45 @PC] text</code></td><td>Entry with machine name</td></tr>
+    <tr><td><code>---</code></td><td>Optional YAML frontmatter at the top of a markdown file</td></tr>
+    <tr><td><code>title: My Note</code></td><td>Shown as the Read mode header title</td></tr>
+    <tr><td><code>status: draft</code></td><td>Shown as metadata in the header bar</td></tr>
+    <tr><td><code>date: 2026-04-06</code></td><td>Shown as metadata in the header bar</td></tr>
+    <tr><td><code>author: chris</code></td><td>Shown as metadata in the header bar</td></tr>
+    <tr><td><code>tags:\n  - work</code></td><td>List-style tags rendered as metadata pills</td></tr>
   </table>
   <p style="margin-top:10px"><a href="https://github.com/spinchange/notepad" target="_blank" rel="noopener">README &amp; source on GitHub</a></p>
 </div>
@@ -380,6 +519,7 @@
       <button class="clear-btn" id="clearBtn" onclick="clearFilters()" style="display:none">Clear</button>
     </div>
     <div id="activeFilterEl"></div>
+    <div id="reader-meta"></div>
     <div id="reader-content"></div>
   </div>
 </div>
@@ -388,6 +528,7 @@
 <input type="file" id="watermarkInput" accept="image/*" style="display:none">
 <script>
   let fileHandle = null;
+  let currentFilename = 'untitled';
   let savedContent = '';
   let inReadMode = false;
   let activeTagFilter = '';
@@ -627,7 +768,105 @@
   const searchBar = document.getElementById('search-bar');
   const clearBtn = document.getElementById('clearBtn');
   const activeFilterEl = document.getElementById('activeFilterEl');
+  const readerMeta = document.getElementById('reader-meta');
   const readerContent = document.getElementById('reader-content');
+
+  function escapeHtml(text) {
+    return String(text)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function isMarkdownFile(name) {
+    return /\.(md|markdown)$/i.test(name || '');
+  }
+
+  function getCurrentFilename() {
+    return fileHandle?.name || currentFilename || 'untitled';
+  }
+
+  function getReadModeKind() {
+    return isMarkdownFile(getCurrentFilename()) ? 'markdown' : 'notepad';
+  }
+
+  function parseMarkdownFrontmatter(text) {
+    if (!text.startsWith('---\n') && !text.startsWith('---\r\n')) {
+      return { frontmatter: {}, body: text };
+    }
+    const normalized = text.replace(/\r\n/g, '\n');
+    const end = normalized.indexOf('\n---\n', 4);
+    if (end === -1) {
+      return { frontmatter: {}, body: text };
+    }
+    const rawFrontmatter = normalized.slice(4, end);
+    const body = normalized.slice(end + 5);
+    const frontmatter = {};
+    let currentKey = null;
+
+    for (const line of rawFrontmatter.split('\n')) {
+      const listMatch = line.match(/^\s*-\s+(.*)$/);
+      if (listMatch && currentKey && Array.isArray(frontmatter[currentKey])) {
+        frontmatter[currentKey].push(listMatch[1].trim());
+        continue;
+      }
+
+      const keyMatch = line.match(/^([A-Za-z0-9_-]+):\s*(.*)$/);
+      if (!keyMatch) continue;
+
+      const key = keyMatch[1];
+      const value = keyMatch[2].trim();
+      currentKey = key;
+
+      if (!value) {
+        frontmatter[key] = [];
+        continue;
+      }
+
+      frontmatter[key] = value;
+    }
+
+    return { frontmatter, body };
+  }
+
+  function getFrontmatterList(frontmatter, key) {
+    const value = frontmatter[key];
+    if (Array.isArray(value)) return value.filter(Boolean);
+    if (!value) return [];
+    return [value];
+  }
+
+  function renderMarkdownMetadata(frontmatter) {
+    const title = frontmatter.title || getCurrentFilename().replace(/\.(md|markdown)$/i, '') || 'Untitled';
+    const pills = [];
+
+    if (frontmatter.status) {
+      pills.push(`<span class="meta-pill labelled"><strong>Status:</strong> ${escapeHtml(frontmatter.status)}</span>`);
+    }
+    if (frontmatter.date) {
+      pills.push(`<span class="meta-pill labelled"><strong>Date:</strong> ${escapeHtml(frontmatter.date)}</span>`);
+    }
+    if (frontmatter.author) {
+      pills.push(`<span class="meta-pill labelled"><strong>Author:</strong> ${escapeHtml(frontmatter.author)}</span>`);
+    }
+    for (const tag of getFrontmatterList(frontmatter, 'tags')) {
+      pills.push(`<span class="meta-pill tag">#${escapeHtml(tag)}</span>`);
+    }
+
+    if (!Object.keys(frontmatter).length) {
+      readerMeta.classList.remove('visible');
+      readerMeta.innerHTML = '';
+      return;
+    }
+
+    readerMeta.innerHTML = `
+      <div class="meta-title">${escapeHtml(title)}</div>
+      <div class="meta-row">${pills.join('')}</div>
+    `;
+    readerMeta.classList.add('visible');
+  }
 
   function toggleReadMode() {
     inReadMode = !inReadMode;
@@ -636,16 +875,18 @@
     readBtn.textContent = inReadMode ? 'Edit' : 'Read';
     readBtn.classList.toggle('active', inReadMode);
     if (inReadMode) {
-      searchBar.style.display = 'flex';
       renderReadMode();
     } else {
       searchBar.style.display = 'none';
+      activeFilterEl.innerHTML = '';
+      readerMeta.classList.remove('visible');
+      readerMeta.innerHTML = '';
     }
   }
 
   function formatInlineText(text) {
     // Escape HTML
-    text = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    text = escapeHtml(text);
     // URLs
     text = text.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
     // Inline code
@@ -657,11 +898,142 @@
     // Strikethrough
     text = text.replace(/~~(.+?)~~/g, '<span class="strikethrough">$1</span>');
     // Tags
-    text = text.replace(/#(\w[\w-]*)/g, '<span class="tag" onclick="filterByTag(\'$1\')">#$1</span>');
+    text = text.replace(/#(\w[\w-]*)/g, '<span class="tag">#$1</span>');
     return text;
   }
 
-  function renderReadMode() {
+  function formatMarkdownInline(text) {
+    let html = escapeHtml(text);
+    // Captured groups are from already-escaped text — do not re-escape them
+    html = html.replace(/!\[([^\]]*)\]\(([^)\s]+)(?:\s+"([^"]*)")?\)/g, (_, alt, src, title) => {
+      const titleAttr = title ? ` title="${title}"` : '';
+      return `<img src="${src}" alt="${alt}"${titleAttr}>`;
+    });
+    html = html.replace(/\[([^\]]+)\]\(([^)\s]+)(?:\s+"([^"]*)")?\)/g, (_, label, href, title) => {
+      const titleAttr = title ? ` title="${title}"` : '';
+      return `<a href="${href}" target="_blank" rel="noopener"${titleAttr}>${label}</a>`;
+    });
+    html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+    html = html.replace(/\*\*([^*][\s\S]*?)\*\*/g, '<strong>$1</strong>');
+    html = html.replace(/__([^_][\s\S]*?)__/g, '<strong>$1</strong>');
+    html = html.replace(/(^|[^\*])\*([^*\n]+)\*(?!\*)/g, '$1<em>$2</em>');
+    html = html.replace(/(^|[^_])_([^_\n]+)_(?!_)/g, '$1<em>$2</em>');
+    html = html.replace(/~~([^~]+)~~/g, '<del>$1</del>');
+    // Negative lookbehind prevents re-linking URLs already inside href/src attributes
+    html = html.replace(/(?<![="'])(https?:\/\/[^\s<"']+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
+    return html;
+  }
+
+  function renderMarkdownReadMode() {
+    const parsed = parseMarkdownFrontmatter(editor.value);
+    const markdown = parsed.body.replace(/\r\n/g, '\n');
+    const lines = markdown.split('\n');
+    const blocks = [];
+    let i = 0;
+
+    renderMarkdownMetadata(parsed.frontmatter);
+
+    while (i < lines.length) {
+      const line = lines[i];
+
+      if (line.trim() === '') {
+        i++;
+        continue;
+      }
+
+      const fenceMatch = line.match(/^```(\w+)?\s*$/);
+      if (fenceMatch) {
+        const lang = fenceMatch[1] || '';
+        const codeLines = [];
+        i++;
+        while (i < lines.length && !/^```/.test(lines[i])) {
+          codeLines.push(lines[i]);
+          i++;
+        }
+        if (i < lines.length) i++;
+        const langClass = lang ? ` class="language-${escapeHtml(lang)}"` : '';
+        blocks.push(`<pre><code${langClass}>${escapeHtml(codeLines.join('\n'))}</code></pre>`);
+        continue;
+      }
+
+      if (/^(-{3,}|\*{3,}|_{3,})\s*$/.test(line)) {
+        blocks.push('<hr>');
+        i++;
+        continue;
+      }
+
+      const headingMatch = line.match(/^(#{1,6})\s+(.+)$/);
+      if (headingMatch) {
+        const level = headingMatch[1].length;
+        blocks.push(`<h${level}>${formatMarkdownInline(headingMatch[2].trim())}</h${level}>`);
+        i++;
+        continue;
+      }
+
+      if (line.startsWith('> ')) {
+        const quoteLines = [];
+        while (i < lines.length && lines[i].startsWith('> ')) {
+          quoteLines.push(lines[i].substring(2));
+          i++;
+        }
+        blocks.push(`<blockquote>${quoteLines.map(formatMarkdownInline).join('<br>')}</blockquote>`);
+        continue;
+      }
+
+      const listMatch = line.match(/^(\s*)([-*+]|\d+\.)\s+(.+)$/);
+      if (listMatch) {
+        const ordered = /\d+\./.test(listMatch[2]);
+        const tagName = ordered ? 'ol' : 'ul';
+        const items = [];
+        while (i < lines.length) {
+          const itemMatch = lines[i].match(/^(\s*)([-*+]|\d+\.)\s+(.+)$/);
+          if (!itemMatch) break;
+          if ((/\d+\./.test(itemMatch[2])) !== ordered) break;
+          items.push(`<li>${formatMarkdownInline(itemMatch[3].trim())}</li>`);
+          i++;
+        }
+        blocks.push(`<${tagName}>${items.join('')}</${tagName}>`);
+        continue;
+      }
+
+      if (line.includes('|')) {
+        const tableLines = [];
+        while (i < lines.length && lines[i].includes('|') && lines[i].trim() !== '') {
+          tableLines.push(lines[i]);
+          i++;
+        }
+        if (tableLines.length >= 2 && /^[\s|:-]+$/.test(tableLines[1])) {
+          const splitRow = (row) => row.split('|').map(cell => cell.trim()).filter((cell, index, arr) => {
+            return !(index === 0 && cell === '') && !(index === arr.length - 1 && cell === '');
+          });
+          const headers = splitRow(tableLines[0]);
+          const bodyRows = tableLines.slice(2).map(splitRow);
+          const thead = `<thead><tr>${headers.map(cell => `<th>${formatMarkdownInline(cell)}</th>`).join('')}</tr></thead>`;
+          const tbody = `<tbody>${bodyRows.map(row => `<tr>${row.map(cell => `<td>${formatMarkdownInline(cell)}</td>`).join('')}</tr>`).join('')}</tbody>`;
+          blocks.push(`<table>${thead}${tbody}</table>`);
+          continue;
+        }
+        i -= tableLines.length;
+      }
+
+      const paragraphLines = [];
+      while (i < lines.length) {
+        const current = lines[i];
+        if (current.trim() === '') break;
+        if (/^```/.test(current) || /^(-{3,}|\*{3,}|_{3,})\s*$/.test(current) || /^(#{1,6})\s+/.test(current) || current.startsWith('> ') || /^(\s*)([-*+]|\d+\.)\s+/.test(current)) break;
+        if (current.includes('|') && i + 1 < lines.length && /^[\s|:-]+$/.test(lines[i + 1])) break;
+        paragraphLines.push(current.trim());
+        i++;
+      }
+      blocks.push(`<p>${formatMarkdownInline(paragraphLines.join(' '))}</p>`);
+    }
+
+    readerContent.innerHTML = `<div class="markdown-body">${blocks.join('')}</div>`;
+  }
+
+  function renderLegacyReadMode() {
+    readerMeta.classList.remove('visible');
+    readerMeta.innerHTML = '';
     const text = editor.value;
     const lines = text.split('\n');
     let html = '';
@@ -669,10 +1041,8 @@
     const sq = searchInput.value || '';
     const query = sq.toLowerCase();
 
-    // Show/hide clear button
     clearBtn.style.display = (sq || activeTagFilter) ? '' : 'none';
 
-    // Active tag filter
     if (activeTagFilter) {
       activeFilterEl.innerHTML = `<div class="active-filter">Filtering: #${activeTagFilter} <span class="remove-filter" onclick="clearTagFilter()">x</span></div>`;
     } else {
@@ -682,26 +1052,22 @@
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
 
-      // Date header: === Day, Month Date, Year ===
       const dateMatch = line.match(/^===\s*(.+?)\s*===$/);
       if (dateMatch) {
         html += `<div class="date-header">${dateMatch[1]}</div>`;
         continue;
       }
 
-      // Timestamped entry: [HH:MM:SS] or [HH:MM:SS @MACHINE]
       const entryMatch = line.match(/^\[(\d{1,2}:\d{2}:\d{2})(?:\s+@(\w+))?\]\s*(.*)/);
       if (entryMatch) {
         const time = entryMatch[1];
         const machine = entryMatch[2] || '';
         const body = entryMatch[3];
 
-        // Tag filter
         if (activeTagFilter) {
           const re = new RegExp('#' + activeTagFilter + '\\b', 'i');
           if (!re.test(body)) continue;
         }
-        // Search filter
         if (query && !body.toLowerCase().includes(query) && !time.includes(query)) continue;
 
         let machineHtml = machine ? ` <span class="entry-machine">@${machine}</span>` : '';
@@ -712,13 +1078,11 @@
         continue;
       }
 
-      // Horizontal rule
       if (/^-{3,}\s*$/.test(line)) {
         html += '<hr>';
         continue;
       }
 
-      // Headings
       const headingMatch = line.match(/^(#{1,3})\s+(.+)/);
       if (headingMatch) {
         const level = headingMatch[1].length;
@@ -728,7 +1092,6 @@
         continue;
       }
 
-      // Blockquote
       if (line.startsWith('> ')) {
         const content = line.substring(2);
         if (query && !content.toLowerCase().includes(query)) continue;
@@ -736,7 +1099,6 @@
         continue;
       }
 
-      // List item
       if (/^[-*]\s+/.test(line)) {
         const content = line.replace(/^[-*]\s+/, '');
         if (query && !content.toLowerCase().includes(query)) continue;
@@ -744,18 +1106,29 @@
         continue;
       }
 
-      // Empty line
       if (line.trim() === '') {
         html += '<div class="plain-line"></div>';
         continue;
       }
 
-      // Plain text line
       if (query && !line.toLowerCase().includes(query)) continue;
       html += `<div class="plain-line">${formatInlineText(line)}</div>`;
     }
 
     readerContent.innerHTML = html;
+  }
+
+  function renderReadMode() {
+    if (getReadModeKind() === 'markdown') {
+      searchBar.style.display = 'none';
+      clearBtn.style.display = 'none';
+      activeTagFilter = '';
+      activeFilterEl.innerHTML = '';
+      renderMarkdownReadMode();
+      return;
+    }
+    searchBar.style.display = 'flex';
+    renderLegacyReadMode();
   }
 
   function filterByTag(tag) {
@@ -776,8 +1149,9 @@
 
   // --- File operations ---
   function updateTitle(name) {
-    filenameEl.textContent = name || 'untitled';
-    document.title = (name || 'untitled') + ' - Notepad';
+    currentFilename = name || 'untitled';
+    filenameEl.textContent = currentFilename;
+    document.title = currentFilename + ' - Notepad';
   }
 
   // --- Timer ---
@@ -865,6 +1239,7 @@
       await writable.close();
       savedContent = editor.value;
       markDirty();
+      if (inReadMode) renderReadMode();
     } catch (e) {
       if (e.name !== 'AbortError') console.error(e);
     }
@@ -873,8 +1248,8 @@
   async function saveFileAs() {
     try {
       fileHandle = await window.showSaveFilePicker({
-        suggestedName: fileHandle ? fileHandle.name : 'untitled.txt',
-        types: [{ description: 'Text Files', accept: { 'text/plain': ['.txt'] }}]
+        suggestedName: fileHandle ? fileHandle.name : getCurrentFilename(),
+        types: [{ description: 'Text Files', accept: { 'text/plain': ['.txt', '.md', '.markdown'] }}]
       });
       await saveFile();
       updateTitle(fileHandle.name);
