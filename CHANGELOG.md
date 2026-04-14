@@ -30,7 +30,7 @@
 
 ## 2026-02-17
 
-- Add **Word export** — toolbar "Word" button downloads a `.doc` file with markdown formatting converted and optional letterhead included
+- Add **Word export** — toolbar "Word" button downloads a `.docx` file with markdown formatting converted and optional letterhead included
 - Add **font family picker** in settings — choose from system fonts (Segoe UI, Arial, Verdana, Georgia, Times New Roman, Consolas) with no external dependencies
 - Add **line spacing slider** in settings (1.2–2.4, defaults to 1.6)
 - Both settings apply to editor and reader and persist in localStorage

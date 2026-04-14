@@ -100,6 +100,21 @@ Frontmatter keys shown in the header bar: `title`, `project`, `status`, `priorit
 
 Click **Edit** to return to the raw text editor.
 
+## Companion Chrome Extension
+
+The `extension/` folder contains a companion extension that captures content from any browser tab and sends it to the Notepad editor.
+
+**Install (unpacked):**
+1. Open Chrome → `chrome://extensions/`
+2. Enable **Developer mode** (top-right toggle)
+3. Click **Load unpacked** → select the `extension/` folder
+
+**Usage:** Click the extension icon on any page, choose **Capture Selection** or **Capture Page**, set options (frontmatter, append/prepend/replace), and click Capture — the Notepad tab updates instantly.
+
+**Keyboard shortcut:** `Alt+Shift+N` (Windows/Linux) / `Cmd+Shift+N` (Mac). Configurable at `chrome://extensions/shortcuts`.
+
+See [`extension/README.md`](extension/README.md) for full details and architecture notes.
+
 ## Browser Support
 
 Requires the [File System Access API](https://developer.mozilla.org/en-US/docs/Web/API/File_System_Access_API) — works in **Chrome** and **Edge**. Firefox and Safari can use the notepad but without native file open/save.

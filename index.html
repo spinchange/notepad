@@ -108,7 +108,9 @@
   #reader .heading.h3 { font-size: 1.15em; }
   #reader .list-item { padding: 2px 0 2px 20px; position: relative; }
   #reader .list-item::before { content: '\2022'; position: absolute; left: 6px; color: #888; }
+  #reader .ol-item { padding: 2px 0 2px 20px; }
   #reader hr { border: none; border-top: 1px solid #ddd; margin: 12px 0; }
+  #reader mark { background: #ffe066; color: inherit; border-radius: 2px; padding: 0 1px; }
   #reader .markdown-body {
     max-width: 56rem;
   }
@@ -373,6 +375,7 @@
   body.dark #help-panel a { color: #6cacee; }
   body.dark #reader .search-bar input { background: #2d2d2d; border-color: #555; color: #ddd; }
   body.dark #reader .search-bar .clear-btn { background: #3c3c3c; border-color: #555; color: #ddd; }
+  body.dark #reader mark { background: #7a6000; color: #fff; }
   body.dark #reader .active-filter { background: #2a3a4a; color: #8cb4e0; }
   body.dark #reader-meta { background: #252525; border-color: #444; }
   body.dark #reader-meta .meta-pill { background: #333; border-color: #444; color: #bbb; }
@@ -1151,6 +1154,34 @@
     } else {
       readerContent.innerHTML = bodyHtml;
     }
+    highlightSearchInReader(searchInput.value);
+  }
+
+  function highlightSearchInReader(query) {
+    if (!query) return;
+    const lq = query.toLowerCase();
+    const walk = document.createTreeWalker(readerContent, NodeFilter.SHOW_TEXT);
+    const nodes = [];
+    let node;
+    while ((node = walk.nextNode())) nodes.push(node);
+    nodes.forEach(textNode => {
+      const text = textNode.textContent;
+      if (!text.toLowerCase().includes(lq)) return;
+      const frag = document.createDocumentFragment();
+      let last = 0, idx;
+      const lower = text.toLowerCase();
+      while ((idx = lower.indexOf(lq, last)) !== -1) {
+        if (idx > last) frag.appendChild(document.createTextNode(text.slice(last, idx)));
+        const mark = document.createElement('mark');
+        mark.textContent = text.slice(idx, idx + lq.length);
+        frag.appendChild(mark);
+        last = idx + lq.length;
+      }
+      if (last < text.length) frag.appendChild(document.createTextNode(text.slice(last)));
+      textNode.parentNode.replaceChild(frag, textNode);
+    });
+    const first = readerContent.querySelector('mark');
+    if (first) first.scrollIntoView({ block: 'center', behavior: 'smooth' });
   }
 
   function renderLegacyReadMode() {
@@ -1228,6 +1259,14 @@
         continue;
       }
 
+      const olMatch = line.match(/^(\d+)\.\s+(.+)/);
+      if (olMatch) {
+        const content = olMatch[2];
+        if (query && !content.toLowerCase().includes(query)) continue;
+        html += `<div class="ol-item">${olMatch[1]}. ${formatInlineText(content)}</div>`;
+        continue;
+      }
+
       if (line.trim() === '') {
         html += '<div class="plain-line"></div>';
         continue;
@@ -1242,8 +1281,8 @@
 
   function renderReadMode() {
     if (getReadModeKind() === 'markdown') {
-      searchBar.style.display = 'none';
-      clearBtn.style.display = 'none';
+      searchBar.style.display = 'flex';
+      clearBtn.style.display = searchInput.value ? '' : 'none';
       activeTagFilter = '';
       activeFilterEl.innerHTML = '';
       renderMarkdownReadMode();
@@ -1550,7 +1589,7 @@ ${content}
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = docName + '.doc';
+    a.download = docName + '.docx';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
