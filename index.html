@@ -520,6 +520,9 @@
     <tr><td><code>Ctrl+R</code></td><td>Toggle read mode</td></tr>
     <tr><td><code>Tab</code></td><td>Insert tab</td></tr>
     <tr><td><code>Ctrl+F</code></td><td>Browser find (use in Read mode)</td></tr>
+    <tr><td><code>Ctrl+B</code></td><td>Bold — wraps selection in <code>**…**</code></td></tr>
+    <tr><td><code>Ctrl+I</code></td><td>Italic — wraps selection in <code>*…*</code></td></tr>
+    <tr><td><code>Ctrl+`</code></td><td>Inline code — wraps selection in backticks</td></tr>
   </table>
   <h3>Markdown formatting — .md / .markdown files</h3>
   <table>
@@ -1596,6 +1599,21 @@ ${content}
     URL.revokeObjectURL(url);
   }
 
+  // --- Markdown wrap helper ---
+  function wrapSelection(before, after) {
+    const start = editor.selectionStart;
+    const end = editor.selectionEnd;
+    const selected = editor.value.slice(start, end);
+    editor.value = editor.value.slice(0, start) + before + selected + after + editor.value.slice(end);
+    if (selected.length === 0) {
+      editor.selectionStart = editor.selectionEnd = start + before.length;
+    } else {
+      editor.selectionStart = start;
+      editor.selectionEnd = start + before.length + selected.length + after.length;
+    }
+    markDirty();
+  }
+
   // --- Keyboard shortcuts ---
   document.addEventListener('keydown', (e) => {
     if (e.ctrlKey && e.key === 's') { e.preventDefault(); saveFile(); }
@@ -1613,6 +1631,9 @@ ${content}
       editor.selectionStart = editor.selectionEnd = start + 1;
       markDirty();
     }
+    if (e.ctrlKey && e.key === 'b') { e.preventDefault(); wrapSelection('**', '**'); }
+    if (e.ctrlKey && e.key === 'i') { e.preventDefault(); wrapSelection('*', '*'); }
+    if (e.ctrlKey && e.key === '`') { e.preventDefault(); wrapSelection('`', '`'); }
   });
 
   updateTitle('untitled');

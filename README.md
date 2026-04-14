@@ -57,6 +57,9 @@ Open `index.html` in Chrome or Edge, or visit the GitHub Pages link above. Bookm
 | Ctrl+N | New |
 | Ctrl+R | Toggle read mode |
 | Tab | Insert tab |
+| Ctrl+B | Bold (`**…**`) — wraps selection or inserts markers |
+| Ctrl+I | Italic (`*…*`) — wraps selection or inserts markers |
+| Ctrl+` | Inline code — wraps selection or inserts markers |
 
 ### Settings
 
