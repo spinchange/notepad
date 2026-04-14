@@ -35,6 +35,7 @@ Runs in any browser from a URL — or install it as a PWA on Chromium-based brow
 - **Line spacing control** — adjustable slider in settings (1.2–2.4)
 - **Editor watermark** — faded background logo behind the editor text, with adjustable opacity
 - **Copy button** — copy editor text to clipboard with one click
+- **Word export** — download the current document as a `.docx` file; letterhead (logo and name) is included in the export
 - **Email button** — open Gmail compose with content pre-filled as a draft
 - **Help button** — in-app formatting reference, shortcuts, and link to README
 - **Keyboard shortcuts** — Ctrl+S (save), Ctrl+O (open), Ctrl+N (new), Ctrl+R (read mode)
