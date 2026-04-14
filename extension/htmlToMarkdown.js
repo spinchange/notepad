@@ -21,10 +21,18 @@ function htmlToMarkdown(html) {
   return convertNode(root).replace(/\n{3,}/g, '\n\n').trim();
 }
 
+function decodeEntities(str) {
+  if (!str.includes('&')) return str;
+  const el = document.createElement('textarea');
+  el.innerHTML = str;
+  return el.value;
+}
+
 function convertNode(node) {
   if (node.nodeType === Node.TEXT_NODE) {
-    // Collapse whitespace but preserve a single space
-    return node.textContent.replace(/[\r\n]+/g, ' ').replace(/\s+/g, ' ');
+    // Collapse whitespace; decode HTML entities that appear as literal text
+    // in the DOM (happens with server-side rendered SPAs like Gemini)
+    return decodeEntities(node.textContent).replace(/[\r\n]+/g, ' ').replace(/\s+/g, ' ');
   }
   if (node.nodeType !== Node.ELEMENT_NODE) return '';
 
