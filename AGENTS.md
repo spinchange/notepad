@@ -23,6 +23,8 @@ This file records repo-specific agent guidance and durable notes discovered whil
 - 2026-04-05: Markdown Read mode hides a leading YAML frontmatter block instead of rendering it as body content.
 - 2026-04-06: Markdown Read mode now parses simple top-of-file YAML frontmatter and shows a metadata header bar for `title`, `status`, `date`, `author`, and `tags`.
 - 2026-04-06: Help text and legacy rendering were aligned away from clickable tag filtering; tags are now presented as inline text/pills rather than interactive filters.
+- 2026-04-16: Markdown Read mode should not show the shared inline search bar; markdown uses browser find (`Ctrl+F`) while the inline search/filter UI remains legacy plain-text-only.
+- 2026-04-16: Catppuccin theme button now cycles flavors in order: Latte -> Frappe -> Macchiato -> Mocha, persisted as `notepad-theme=catppuccin-<flavor>`.
 
 ## 2026-04-12 Session
 

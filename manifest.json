@@ -5,8 +5,8 @@
   "start_url": "/notepad/",
   "scope": "/notepad/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#f0f0f0",
+  "background_color": "#24273a",
+  "theme_color": "#1e2030",
   "icons": [
     {
       "src": "icon-192.png",

@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%231e1e1e'/><text text-anchor='middle' font-family='Consolas,monospace' font-weight='700'><tspan x='50' y='34' font-size='17' fill='%234a9eff'>---</tspan><tspan x='50' y='58' font-size='24' fill='%23ffffff'>%23.MD</tspan><tspan x='50' y='76' font-size='17' fill='%234a9eff'>---</tspan></text></svg>">
 <link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="catppuccin.css">
 <title>Notepad</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -430,6 +431,7 @@
   <button onclick="toggleReadMode()" id="readBtn">Read</button>
   <div class="separator"></div>
   <button onclick="toggleTheme()" id="themeBtn">Dark</button>
+  <button onclick="toggleCatppuccinTheme()" id="catppuccinThemeBtn">Catppuccin</button>
   <button onclick="toggleSettings()">Settings</button>
   <button onclick="copyToClipboard()" class="tb-desktop">Copy</button>
   <button onclick="emailDraft()" class="tb-desktop">Email</button>
@@ -617,13 +619,49 @@
   const fontSizeVal = document.getElementById('fontSizeVal');
   const fontFamilyInput = document.getElementById('fontFamily');
   const lineSpacingInput = document.getElementById('lineSpacing');
-  const lineSpacingVal = document.getElementById('lineSpacingVal');
+  const catppuccinThemeBtn = document.getElementById('catppuccinThemeBtn');
+  const CATPPUCCIN_THEMES = ['latte', 'frappe', 'macchiato', 'mocha'];
+  const CATPPUCCIN_THEME_LABELS = {
+    latte: 'Latte',
+    frappe: 'Frappe',
+    macchiato: 'Macchiato',
+    mocha: 'Mocha'
+  };
+
+  function getCurrentCatppuccinTheme() {
+    return CATPPUCCIN_THEMES.find(name => document.body.classList.contains(`catppuccin-${name}`)) || 'macchiato';
+  }
+
+  function setCatppuccinTheme(theme) {
+    document.body.classList.remove('dark');
+    document.body.classList.add('catppuccin');
+    CATPPUCCIN_THEMES.forEach(name => document.body.classList.remove(`catppuccin-${name}`));
+    const resolvedTheme = CATPPUCCIN_THEMES.includes(theme) ? theme : 'macchiato';
+    document.body.classList.add(`catppuccin-${resolvedTheme}`);
+    themeBtn.textContent = 'Dark';
+    catppuccinThemeBtn.textContent = `Catppuccin: ${CATPPUCCIN_THEME_LABELS[resolvedTheme]}`;
+    localStorage.setItem('notepad-theme', `catppuccin-${resolvedTheme}`);
+  }
 
   // --- Theme ---
   function toggleTheme() {
+    document.body.classList.remove('catppuccin');
+    CATPPUCCIN_THEMES.forEach(name => document.body.classList.remove(`catppuccin-${name}`));
     const dark = document.body.classList.toggle('dark');
     themeBtn.textContent = dark ? 'Light' : 'Dark';
     localStorage.setItem('notepad-theme', dark ? 'dark' : 'light');
+  }
+
+  function toggleCatppuccinTheme() {
+    document.body.classList.remove('dark');
+    if (!document.body.classList.contains('catppuccin')) {
+      setCatppuccinTheme('macchiato');
+      return;
+    }
+    const currentTheme = getCurrentCatppuccinTheme();
+    const currentIndex = CATPPUCCIN_THEMES.indexOf(currentTheme);
+    const nextTheme = CATPPUCCIN_THEMES[(currentIndex + 1) % CATPPUCCIN_THEMES.length];
+    setCatppuccinTheme(nextTheme);
   }
 
   // --- Settings panel ---
@@ -798,9 +836,14 @@
 
   // --- Restore settings ---
   function restoreSettings() {
-    if (localStorage.getItem('notepad-theme') === 'dark') {
+    const theme = localStorage.getItem('notepad-theme');
+    if (theme === 'dark') {
       document.body.classList.add('dark');
       themeBtn.textContent = 'Light';
+    } else if (theme === 'catppuccin') {
+      setCatppuccinTheme('macchiato');
+    } else if (theme && theme.startsWith('catppuccin-')) {
+      setCatppuccinTheme(theme.substring('catppuccin-'.length));
     }
     if (localStorage.getItem('notepad-showBrand') === 'true') {
       showBrandCheck.checked = true;
@@ -1157,34 +1200,6 @@
     } else {
       readerContent.innerHTML = bodyHtml;
     }
-    highlightSearchInReader(searchInput.value);
-  }
-
-  function highlightSearchInReader(query) {
-    if (!query) return;
-    const lq = query.toLowerCase();
-    const walk = document.createTreeWalker(readerContent, NodeFilter.SHOW_TEXT);
-    const nodes = [];
-    let node;
-    while ((node = walk.nextNode())) nodes.push(node);
-    nodes.forEach(textNode => {
-      const text = textNode.textContent;
-      if (!text.toLowerCase().includes(lq)) return;
-      const frag = document.createDocumentFragment();
-      let last = 0, idx;
-      const lower = text.toLowerCase();
-      while ((idx = lower.indexOf(lq, last)) !== -1) {
-        if (idx > last) frag.appendChild(document.createTextNode(text.slice(last, idx)));
-        const mark = document.createElement('mark');
-        mark.textContent = text.slice(idx, idx + lq.length);
-        frag.appendChild(mark);
-        last = idx + lq.length;
-      }
-      if (last < text.length) frag.appendChild(document.createTextNode(text.slice(last)));
-      textNode.parentNode.replaceChild(frag, textNode);
-    });
-    const first = readerContent.querySelector('mark');
-    if (first) first.scrollIntoView({ block: 'center', behavior: 'smooth' });
   }
 
   function renderLegacyReadMode() {
@@ -1284,8 +1299,8 @@
 
   function renderReadMode() {
     if (getReadModeKind() === 'markdown') {
-      searchBar.style.display = 'flex';
-      clearBtn.style.display = searchInput.value ? '' : 'none';
+      searchBar.style.display = 'none';
+      clearBtn.style.display = 'none';
       activeTagFilter = '';
       activeFilterEl.innerHTML = '';
       renderMarkdownReadMode();
