@@ -54,7 +54,7 @@ This file records repo-specific agent guidance and durable notes discovered whil
 
 **Added PWA:** `manifest.json`, `sw.js` (cache-first, offline capable), `icon-192.png`, `icon-512.png`. Two lines added to `index.html`: manifest link + SW registration. Web Share Target included in manifest — other apps can share text/URL into the editor via query params (`?text=&title=&url=`), handled and cleaned up on load.
 
-**SW cache versioning rule:** bump `CACHE = 'notepad-vN'` in `sw.js` any time `index.html` changes. Currently at v4. The activate handler deletes old caches automatically.
+**SW cache versioning rule:** bump `CACHE = 'notepad-vN'` in `sw.js` any time `index.html` changes. Currently at v20. The activate handler deletes old caches automatically.
 
 **Table renderer improvements:**
 - Column alignment now parsed from delimiter row (`:---` left, `---:` right, `:---:` center) and applied as inline `style` on `<th>`/`<td>`
