@@ -431,7 +431,7 @@
   <button onclick="toggleReadMode()" id="readBtn">Read</button>
   <div class="separator"></div>
   <button onclick="toggleTheme()" id="themeBtn">Dark</button>
-  <button onclick="toggleCatppuccinTheme()" id="catppuccinThemeBtn">Catppuccin</button>
+  <button onclick="toggleCatppuccinTheme()" id="catppuccinThemeBtn">Catppuccin: Macchiato</button>
   <button onclick="toggleSettings()">Settings</button>
   <button onclick="copyToClipboard()" class="tb-desktop">Copy</button>
   <button onclick="emailDraft()" class="tb-desktop">Email</button>
@@ -619,6 +619,7 @@
   const fontSizeVal = document.getElementById('fontSizeVal');
   const fontFamilyInput = document.getElementById('fontFamily');
   const lineSpacingInput = document.getElementById('lineSpacing');
+  const lineSpacingVal = document.getElementById('lineSpacingVal');
   const catppuccinThemeBtn = document.getElementById('catppuccinThemeBtn');
   const CATPPUCCIN_THEMES = ['latte', 'frappe', 'macchiato', 'mocha'];
   const CATPPUCCIN_THEME_LABELS = {
