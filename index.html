@@ -48,12 +48,51 @@
     font-family: system-ui; min-width: 120px;
   }
   #brand-text::placeholder { color: #aaa; }
-  #content-area { display: flex; flex-direction: column; flex: 1; min-height: 0; position: relative; }
+  #content-area { display: flex; flex-direction: row; flex: 1; min-height: 0; }
+  #editor-area { display: flex; flex-direction: column; flex: 1; min-width: 0; position: relative; }
   #editor {
-    flex: 1; padding: 12px; font-family: Consolas, 'Courier New', monospace;
+    flex: 1; padding: 12px 12px 40vh 12px; font-family: Consolas, 'Courier New', monospace;
     font-size: 14px; border: none; outline: none; resize: none;
     white-space: pre-wrap; word-wrap: break-word; overflow: auto; tab-size: 4;
     background: #fff; color: #000;
+  }
+
+  /* Sidebar */
+  #sidebar {
+    display: none; flex-direction: column;
+    width: 220px; min-width: 160px; max-width: 320px;
+    border-right: 1px solid #ccc; background: #f8f8f8;
+    overflow: hidden; flex-shrink: 0;
+  }
+  #sidebar.visible { display: flex; }
+  #sidebar-header {
+    display: flex; align-items: center; gap: 4px;
+    padding: 6px 8px; border-bottom: 1px solid #ddd;
+    background: #f0f0f0;
+  }
+  #sidebar-search {
+    flex: 1; padding: 3px 7px; border: 1px solid #ccc; border-radius: 3px;
+    font-size: 12px; font-family: system-ui; outline: none; background: #fff;
+  }
+  #sidebar-search:focus { border-color: #88b; }
+  #sidebar-scan {
+    padding: 3px 8px; border: 1px solid #aaa; background: #fff;
+    border-radius: 3px; cursor: pointer; font-size: 12px; color: #333;
+    white-space: nowrap; flex-shrink: 0;
+  }
+  #sidebar-scan:hover { background: #e8e8e8; }
+  #sidebar-list {
+    flex: 1; overflow-y: auto; padding: 4px 0;
+  }
+  .sidebar-file {
+    padding: 5px 10px; font-size: 12px; cursor: pointer;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    color: #333; font-family: Consolas, 'Courier New', monospace;
+  }
+  .sidebar-file:hover { background: #e8e8e8; }
+  .sidebar-file.active { background: #ddeeff; color: #224; }
+  #sidebar-empty {
+    padding: 12px 10px; font-size: 12px; color: #999; font-style: italic;
   }
 
   /* Read mode */
@@ -327,6 +366,20 @@
   body.dark #brand-text::placeholder { color: #666; }
   body.dark #brand-placeholder { border-color: #555; color: #777; }
   body.dark #editor { background: #1e1e1e; color: #d4d4d4; }
+  body.dark #sidebar { background: #252525; border-right-color: #444; }
+  body.dark #sidebar-header { background: #2d2d2d; border-bottom-color: #444; }
+  body.dark #sidebar-search { background: #3c3c3c; border-color: #555; color: #ddd; }
+  body.dark #sidebar-scan { background: #3c3c3c; border-color: #555; color: #ddd; }
+  body.dark #sidebar-scan:hover { background: #505050; }
+  body.dark .sidebar-file { color: #ccc; }
+  body.dark .sidebar-file:hover { background: #3c3c3c; }
+  body.dark .sidebar-file.active { background: #2a3a4a; color: #8cb4e0; }
+  body.dark #sidebar-empty { color: #666; }
+  #autosave-flash {
+    display: none; position: fixed; bottom: 10px; right: 14px;
+    font-size: 11px; color: #888; pointer-events: none;
+    font-family: system-ui;
+  }
   body.dark #reader { background: #1e1e1e; color: #d4d4d4; }
   body.dark #reader .date-header { color: #ccc; border-bottom-color: #444; }
   body.dark #reader .entry { border-bottom-color: #333; }
@@ -408,7 +461,7 @@
     #reader .markdown-toc { position: static; max-height: none; margin-bottom: 20px; }
   }
   @media print {
-    #toolbar, #settings-panel, #help-panel { display: none !important; }
+    #toolbar, #settings-panel, #help-panel, #sidebar { display: none !important; }
     #brand-bar.visible { display: flex !important; }
     body { height: auto; }
     #content-area { flex: none; min-height: auto; }
@@ -427,6 +480,8 @@
   <button onclick="openFile()">Open</button>
   <button onclick="saveFile()">Save</button>
   <button onclick="saveFileAs()">Save As</button>
+  <div class="separator"></div>
+  <button onclick="toggleSidebar()" id="sidebarBtn">Files</button>
   <div class="separator"></div>
   <button onclick="toggleReadMode()" id="readBtn">Read</button>
   <div class="separator"></div>
@@ -576,18 +631,30 @@
   <input type="text" id="brand-text" placeholder="Your name or company">
 </div>
 <div id="content-area">
-  <div id="watermark"><img id="watermark-img"></div>
-  <textarea id="editor" spellcheck="false"></textarea>
-  <div id="reader">
-    <div class="search-bar" id="search-bar" style="display:none">
-      <input type="text" id="searchInput" placeholder="Search..." oninput="renderReadMode()">
-      <button class="clear-btn" id="clearBtn" onclick="clearFilters()" style="display:none">Clear</button>
+  <div id="sidebar">
+    <div id="sidebar-header">
+      <input type="text" id="sidebar-search" placeholder="Filter files…" oninput="filterSidebar()">
+      <button id="sidebar-scan" onclick="scanDirectory()">Scan</button>
     </div>
-    <div id="activeFilterEl"></div>
-    <div id="reader-meta"></div>
-    <div id="reader-content"></div>
+    <div id="sidebar-list">
+      <div id="sidebar-empty">No folder open. Click Scan to pick one.</div>
+    </div>
+  </div>
+  <div id="editor-area">
+    <div id="watermark"><img id="watermark-img"></div>
+    <textarea id="editor" spellcheck="false"></textarea>
+    <div id="reader">
+      <div class="search-bar" id="search-bar" style="display:none">
+        <input type="text" id="searchInput" placeholder="Search..." oninput="renderReadMode()">
+        <button class="clear-btn" id="clearBtn" onclick="clearFilters()" style="display:none">Clear</button>
+      </div>
+      <div id="activeFilterEl"></div>
+      <div id="reader-meta"></div>
+      <div id="reader-content"></div>
+    </div>
   </div>
 </div>
+<div id="autosave-flash">Auto-saved</div>
 <input type="file" id="openInput" accept=".txt,.md,.markdown,.log,.csv,.json,.xml,.html,.css,.js,.ps1,.py" style="display:none">
 <input type="file" id="logoInput" accept="image/*" style="display:none">
 <input type="file" id="bgInput" accept="image/*" style="display:none">
@@ -1666,6 +1733,116 @@ ${content}
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/notepad/sw.js');
   }
+
+  // --- Sidebar ---
+  const sidebarEl = document.getElementById('sidebar');
+  const sidebarBtn = document.getElementById('sidebarBtn');
+  const sidebarSearchEl = document.getElementById('sidebar-search');
+  const sidebarListEl = document.getElementById('sidebar-list');
+  const sidebarEmptyEl = document.getElementById('sidebar-empty');
+
+  let dirHandle = null;
+  let scannedFiles = []; // { name, handle }
+
+  const TEXT_EXTS = /\.(txt|md|markdown|log|csv|json|xml|html|css|js|ps1|py)$/i;
+
+  function toggleSidebar() {
+    const open = sidebarEl.classList.toggle('visible');
+    sidebarBtn.classList.toggle('active', open);
+    localStorage.setItem('notepad-sidebar', open ? '1' : '');
+  }
+
+  async function scanDirectory() {
+    if (!window.showDirectoryPicker) {
+      alert('Your browser does not support the File System Access API. Try Chrome or Edge.');
+      return;
+    }
+    try {
+      dirHandle = await window.showDirectoryPicker({ mode: 'readwrite' });
+    } catch (e) {
+      if (e.name === 'AbortError') return;
+      console.error(e);
+      return;
+    }
+    await rescanDirectory();
+  }
+
+  async function rescanDirectory() {
+    if (!dirHandle) return;
+    scannedFiles = [];
+    for await (const [name, handle] of dirHandle.entries()) {
+      if (handle.kind === 'file' && TEXT_EXTS.test(name)) {
+        scannedFiles.push({ name, handle });
+      }
+    }
+    scannedFiles.sort((a, b) => a.name.localeCompare(b.name));
+    filterSidebar();
+  }
+
+  function filterSidebar() {
+    const query = sidebarSearchEl.value.toLowerCase();
+    const matches = query
+      ? scannedFiles.filter(f => f.name.toLowerCase().includes(query))
+      : scannedFiles;
+
+    if (scannedFiles.length === 0) {
+      sidebarListEl.innerHTML = '<div id="sidebar-empty">No folder open. Click Scan to pick one.</div>';
+      return;
+    }
+    if (matches.length === 0) {
+      sidebarListEl.innerHTML = '<div id="sidebar-empty">No matches.</div>';
+      return;
+    }
+
+    const currentName = fileHandle?.name || '';
+    sidebarListEl.innerHTML = matches.map(f =>
+      `<div class="sidebar-file${f.name === currentName ? ' active' : ''}" title="${f.name}" onclick="openSidebarFile(${scannedFiles.indexOf(f)})">${f.name}</div>`
+    ).join('');
+  }
+
+  async function openSidebarFile(idx) {
+    const f = scannedFiles[idx];
+    if (!f) return;
+    if (editor.value !== savedContent && !confirm('Discard unsaved changes?')) return;
+    try {
+      const file = await f.handle.getFile();
+      editor.value = await file.text();
+      fileHandle = f.handle;
+      savedContent = editor.value;
+      updateTitle(f.name);
+      markDirty();
+      if (inReadMode) renderReadMode();
+      filterSidebar(); // refresh active highlight
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  if (localStorage.getItem('notepad-sidebar')) {
+    sidebarEl.classList.add('visible');
+    sidebarBtn.classList.add('active');
+  }
+
+  // --- Auto-save ---
+  const autosaveFlash = document.getElementById('autosave-flash');
+  let autosaveTimer = null;
+
+  setInterval(async () => {
+    if (!fileHandle) return;
+    if (editor.value === savedContent) return;
+    try {
+      const writable = await fileHandle.createWritable();
+      await writable.write(editor.value);
+      await writable.close();
+      savedContent = editor.value;
+      markDirty();
+      autosaveFlash.style.display = 'block';
+      clearTimeout(autosaveTimer);
+      autosaveTimer = setTimeout(() => { autosaveFlash.style.display = 'none'; }, 2000);
+    } catch (e) {
+      // permission may have been revoked — skip silently
+    }
+  }, 30000);
 </script>
 </body>
 </html>
