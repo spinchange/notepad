@@ -162,3 +162,14 @@ body.catppuccin #settings-panel label { color: var(--ctp-text); }
 body.catppuccin #settings-panel button { background: var(--ctp-surface1); border-color: var(--ctp-surface2); color: var(--ctp-text); }
 body.catppuccin #settings-panel button:hover { background: var(--ctp-surface2); }
 body.catppuccin #settings-panel select { background: var(--ctp-surface1); border-color: var(--ctp-surface2); color: var(--ctp-text); }
+
+/* Sidebar */
+body.catppuccin #sidebar { background: var(--ctp-mantle); border-right-color: var(--ctp-surface0); }
+body.catppuccin #sidebar-header { background: var(--ctp-crust); border-bottom-color: var(--ctp-surface0); }
+body.catppuccin #sidebar-search { background: var(--ctp-surface0); border-color: var(--ctp-surface1); color: var(--ctp-text); }
+body.catppuccin #sidebar-scan { background: var(--ctp-surface1); border-color: var(--ctp-surface2); color: var(--ctp-text); }
+body.catppuccin #sidebar-scan:hover { background: var(--ctp-surface2); }
+body.catppuccin .sidebar-file { color: var(--ctp-subtext1); }
+body.catppuccin .sidebar-file:hover { background: var(--ctp-surface0); }
+body.catppuccin .sidebar-file.active { background: var(--ctp-blue); color: var(--ctp-crust); }
+body.catppuccin #sidebar-empty { color: var(--ctp-overlay0); }
