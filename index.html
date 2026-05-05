@@ -660,6 +660,15 @@
 <input type="file" id="bgInput" accept="image/*" style="display:none">
 <input type="file" id="watermarkInput" accept="image/*" style="display:none">
 <script>
+  function generateULID() {
+    const enc = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
+    let t = Date.now(), ts = '';
+    for (let i = 0; i < 10; i++) { ts = enc[t % 32] + ts; t = Math.floor(t / 32); }
+    const bytes = new Uint8Array(10);
+    crypto.getRandomValues(bytes);
+    return ts + Array.from(bytes, b => enc[b % 32]).join('');
+  }
+
   let fileHandle = null;
   let currentFilename = 'untitled';
   let savedContent = '';
@@ -1455,7 +1464,7 @@
     fileHandle = null;
     editor.value = '';
     savedContent = '';
-    updateTitle('untitled');
+    updateTitle(generateULID() + '.md');
     markDirty();
     if (inReadMode) renderReadMode();
   }
