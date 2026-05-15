@@ -1124,6 +1124,53 @@
     return html;
   }
 
+  function getMarkdownIndentWidth(indent) {
+    return indent.replace(/\t/g, '    ').length;
+  }
+
+  function matchMarkdownListItem(line) {
+    const match = line.match(/^(\s*)([-*+]|\d+\.)\s+(.+)$/);
+    if (!match) return null;
+    const marker = match[2];
+    return {
+      indent: getMarkdownIndentWidth(match[1]),
+      ordered: /\d+\./.test(marker),
+      number: parseInt(marker, 10) || 1,
+      text: match[3].trim()
+    };
+  }
+
+  function renderMarkdownList(lines, startIndex, baseIndent, ordered) {
+    const tagName = ordered ? 'ol' : 'ul';
+    const firstItem = matchMarkdownListItem(lines[startIndex]);
+    const startAttr = ordered && firstItem && firstItem.number !== 1 ? ` start="${firstItem.number}"` : '';
+    const items = [];
+    let i = startIndex;
+
+    while (i < lines.length) {
+      const item = matchMarkdownListItem(lines[i]);
+      if (!item) break;
+      if (item.indent < baseIndent) break;
+
+      if (item.indent > baseIndent) {
+        if (items.length === 0) break;
+        const nested = renderMarkdownList(lines, i, item.indent, item.ordered);
+        items[items.length - 1] += nested.html;
+        i = nested.nextIndex;
+        continue;
+      }
+
+      if (item.ordered !== ordered) break;
+      items.push(formatMarkdownInline(item.text));
+      i++;
+    }
+
+    return {
+      html: `<${tagName}${startAttr}>${items.map(item => `<li>${item}</li>`).join('')}</${tagName}>`,
+      nextIndex: i
+    };
+  }
+
   function renderMarkdownReadMode() {
     const parsed = parseMarkdownFrontmatter(editor.value);
     const markdown = parsed.body.replace(/\r\n/g, '\n');
@@ -1190,17 +1237,9 @@
 
       const listMatch = line.match(/^(\s*)([-*+]|\d+\.)\s+(.+)$/);
       if (listMatch) {
-        const ordered = /\d+\./.test(listMatch[2]);
-        const tagName = ordered ? 'ol' : 'ul';
-        const items = [];
-        while (i < lines.length) {
-          const itemMatch = lines[i].match(/^(\s*)([-*+]|\d+\.)\s+(.+)$/);
-          if (!itemMatch) break;
-          if ((/\d+\./.test(itemMatch[2])) !== ordered) break;
-          items.push(`<li>${formatMarkdownInline(itemMatch[3].trim())}</li>`);
-          i++;
-        }
-        blocks.push(`<${tagName}>${items.join('')}</${tagName}>`);
+        const list = renderMarkdownList(lines, i, getMarkdownIndentWidth(listMatch[1]), /\d+\./.test(listMatch[2]));
+        blocks.push(list.html);
+        i = list.nextIndex;
         continue;
       }
 
